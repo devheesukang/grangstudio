@@ -92,6 +92,8 @@ Mobile-first. Three layouts:
 
 **What this site is not:** a résumé. No skills, no career timeline, no awards section, no education. Viewers are here to experience the work.
 
+**Branding rule — studio over person:** The site presents **Grang Studio** as the brand, not Kang Bosun as an individual. The photographer's name appears only once, in the minimal Info section at the bottom. Everywhere else — hero, nav wordmark, page title, metadata — the identity is "Grang Studio". Do not foreground the person's name in any section heading, hero, or prominent UI element.
+
 Navigation: wordmark left, section links center, theme toggle right. Links scroll to anchors smoothly. Active section indicated subtly (not aggressively highlighted).
 
 ## Portfolio Content

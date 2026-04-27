@@ -37,7 +37,7 @@ function HeroV1() {
             color: 'var(--fg)',
           }}
         >
-          Kang Bosun
+          Grang Studio
         </motion.h1>
 
         <motion.p
@@ -48,7 +48,7 @@ function HeroV1() {
           className="text-[10px] tracking-[0.5em] uppercase"
           style={{ color: 'var(--muted)' }}
         >
-          Photographer &amp; Video Director
+          Photography &amp; Video Direction
         </motion.p>
       </div>
 
@@ -122,7 +122,7 @@ function HeroV2() {
             letterSpacing: '0.01em',
           }}
         >
-          Kang Bosun
+          Grang Studio
         </motion.h1>
 
         <motion.p
@@ -136,7 +136,7 @@ function HeroV2() {
             color: 'rgba(255,255,255,0.45)',
           }}
         >
-          Photographer &amp; Video Director
+          Photography &amp; Video Direction
         </motion.p>
       </div>
 
@@ -208,9 +208,9 @@ function HeroV3() {
               color: 'var(--fg)',
             }}
           >
-            Kang
+            Grang
             <br />
-            <em>Bosun</em>
+            <em>Studio</em>
           </motion.h1>
 
           <motion.p
@@ -221,7 +221,7 @@ function HeroV3() {
             className="text-[10px] tracking-[0.4em] uppercase mt-7"
             style={{ color: 'var(--muted)' }}
           >
-            Photographer &amp; Video Director
+            Photography &amp; Video Direction
           </motion.p>
 
           <motion.p
@@ -232,7 +232,7 @@ function HeroV3() {
             className="text-sm leading-relaxed mt-5"
             style={{ color: 'var(--muted)', fontFamily: 'var(--font-dm-sans)' }}
           >
-            Visual storyteller based in Seoul,
+            Visual storytelling based in Seoul,
             <br />
             specializing in brand and content direction.
           </motion.p>
