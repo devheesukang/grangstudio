@@ -31,13 +31,15 @@ Personal portfolio website for **Kang Bosun (강보선)**, photographer and vide
 
 ## Design Principles
 
-- **Minimal and purposeful** — whitespace is intentional, not empty
-- **Typography-forward** — large, expressive type carries the aesthetic
-- **Media is the hero** — UI chrome recedes; photos and videos dominate
-- **No generic patterns** — no cards with drop shadows, no rounded-everything, no stock layouts
-- **Dark theme:** cinematic — near-black backgrounds, muted warm tones, high contrast on imagery
-- **Light theme:** editorial/print — off-white backgrounds, fine typography, clean negative space
-- **Consistent language:** English for all UI labels (navigation, section titles, metadata) regardless of image filenames
+- **The work is everything** — images and videos are the entire point; UI exists only to serve them
+- **Minimal and purposeful** — whitespace is intentional, not empty; nothing decorative that doesn't serve the art
+- **No résumé elements** — no skills bars, no career timelines, no award badges, no tech stack displays
+- **Scroll as experience** — transitions between sections should feel intentional and atmospheric, not mechanical
+- **Animations: subtle and cool** — entrance reveals, smooth fades, parallax where appropriate; never distracting
+- **Typography-forward** — large, expressive type carries the identity; used sparingly
+- **Dark theme:** cinematic — near-black backgrounds, high contrast on imagery, moody atmosphere
+- **Light theme:** editorial/print — off-white, clean negative space, gallery-wall feeling
+- **No generic patterns** — no cards with drop shadows, no rounded-everything, no stock portfolio layouts
 
 ## Theme System
 
@@ -58,16 +60,16 @@ Mobile-first. Three layouts:
 
 ```
 / (single page)
-├── #hero          — Full-viewport hero with name, title, subtle animation
-├── #about         — Bio, profile photo, career summary, skills
-├── #photography   — Filterable photo gallery by category
-├── #video         — Video section with YouTube embeds
-├── #design        — 2D illustration / graphic design work
-├── #awards        — Competition awards with links
-└── #contact       — Email, phone, social links
+├── #hero          — Full-viewport atmospheric opener: name + role, minimal type, entrance animation
+├── #photography   — Main gallery: filterable photo grid, the heart of the site
+├── #video         — Video work: embedded YouTube, cinematic presentation
+├── #design        — 2D / graphic design work: poster and illustration grid
+└── #info          — Bottom of page: short one-line bio, email, Instagram — nothing more
 ```
 
-Navigation links scroll to anchors. Active section highlighted in nav.
+**What this site is not:** a résumé. No skills, no career timeline, no awards section, no education. Viewers are here to experience the work.
+
+Navigation: wordmark left, section links center, theme toggle right. Links scroll to anchors smoothly. Active section indicated subtly (not aggressively highlighted).
 
 ## Portfolio Content
 
@@ -129,38 +131,16 @@ Embed via `youtube-nocookie.com`. Show as cards with thumbnail + title + year.
 | 공주시 홍보영상 장려상 (Gongju City Promo, Honorable Mention) | https://youtu.be/JSfTl92wm8w | 2020 | 공주시 |
 | 인생백화점 1등 (Life Department Store, 1st place) | https://youtu.be/dJSKauRC10Q | 2022 | 성동구청 |
 
-### Skills (for About section)
+### Info Section (bottom of page — minimal)
 
-| Tool | Level | Capabilities |
-|---|---|---|
-| Lightroom Classic | ★★★★★ | Color grading, tone correction, catalog management |
-| Photoshop | ★★★★★ | Image editing, compositing, AI tools |
-| Premiere Pro | ★★★★★ | Video editing, color correction, sound sync |
-| Gemini | ★★★★★ | AI image generation, concept references |
-| Chat GPT | ★★★★★ | Copywriting, concept ideation, research |
-| After Effects | ★★★★☆ | Motion graphics, VFX, type animation |
-| Illustrator | ★★★★☆ | Vector design, icons, print materials |
-| Grok | ★★★★☆ | Fact-checking, image reference |
-| Powerpoint | ★★★★☆ | Presentation design |
-| Excel | ★★★★☆ | Data management |
+Only these elements appear on the site:
+- **Name:** Kang Bosun
+- **Role:** Photographer & Video Director
+- **Bio (one line):** Visual storyteller based in Seoul, specializing in brand and content direction.
+- **Email:** wolfkang0514@naver.com
+- **Instagram:** @g.raang (봉사활동 동아리 그랑)
 
-## Career / Experience (for About section)
-
-**라이즈에듀테이션코리아 (RISE Education Korea)** — Freelance, Oct 2010–present
-- Writing competition sketch photography (2019, 2022)
-- Online English lecture production — 47 episodes (2022)
-- Christmas, Chuseok performance/event video production
-- Campus Tour video production
-- Student lecture sketch photography
-- Student growth interviews, parent interviews
-- Prof. Cho Seongmi invited lecture video
-
-**롯데월드 (Lotte World)** — Entertainment Team, Video Planning Assistant Director, Sep–Nov 2024
-- Official homepage seasonal performance video shoots
-- Stage performance edit videos
-- Stage performance broadcasting
-- Seasonal performance banner design
-- Performance guide video production
+Nothing else. No skills, no career history, no education, no awards on the site.
 
 ## Directory Structure
 
@@ -194,7 +174,7 @@ Embed via `youtube-nocookie.com`. Show as cards with thumbnail + title + year.
     │   └── globals.css
     ├── components/
     │   ├── layout/         # Nav, Footer, ThemeToggle
-    │   ├── sections/       # Hero, About, Photography, Video, Design, Awards, Contact
+    │   ├── sections/       # Hero, Photography, Video, Design, Info
     │   └── ui/             # Shared primitives (GalleryGrid, VideoCard, etc.)
     ├── lib/
     │   └── portfolio.ts    # All typed content data (projects, videos, awards)
@@ -279,15 +259,15 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [ ] Verify light/dark switch works, no flash on load
 - [ ] Commit: `feat: phase 1 — foundation, layout, theme system`
 
-### Phase 2 — Hero + About [ ]
+### Phase 2 — Hero [ ]
 > Checkpoint: review design direction before building remaining sections.
 
-- [ ] Build `Hero` section: full-viewport, name + title large type, subtle entrance animation
-- [ ] Build `About` section: profile photo (`next/image`), bio text, career timeline, skills grid
+- [ ] Build `Hero` section: full-viewport, atmospheric, name + role in large type, entrance animation
+- [ ] Confirm scroll transition from Hero into the next section feels intentional
 - [ ] Confirm responsive layout on mobile / tablet / desktop
-- [ ] Confirm light/dark rendering looks correct on both sections
+- [ ] Confirm light/dark rendering feels right (cinematic dark / editorial light)
 - [ ] **User review checkpoint** — approve design direction before proceeding to Phase 3
-- [ ] Commit: `feat: phase 2 — hero and about sections`
+- [ ] Commit: `feat: phase 2 — hero section`
 
 ### Phase 3 — Photography Gallery [ ]
 > Most complex phase. Requires image organization before wiring up the gallery.
@@ -300,16 +280,16 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [ ] Test all 13 categories filter correctly
 - [ ] Commit: `feat: phase 3 — photography gallery`
 
-### Phase 4 — Video, Design, Awards, Contact [ ]
+### Phase 4 — Video, Design, Info + Polish [ ]
 > Remaining sections. Bundle together then do final polish pass.
 
-- [ ] Build `Video` section: YouTube embed cards (`youtube-nocookie.com`), title + year, responsive grid
-- [ ] Build `Design` section: image grid for 2D illustration/poster work
-- [ ] Build `Awards` section: list with title, award body, year, link to YouTube
-- [ ] Build `Contact` section: email, phone, minimal layout — no form needed
-- [ ] Global polish: audit all responsive breakpoints, refine spacing and animation timing
+- [ ] Build `Video` section: YouTube embed cards (`youtube-nocookie.com`), cinematic presentation, responsive
+- [ ] Build `Design` section: poster and illustration image grid
+- [ ] Build `Info` section: one-line bio, email, Instagram — absolute minimum, bottom of page
+- [ ] Global scroll experience polish: section transitions, animation timing, spacing rhythm
+- [ ] Audit all responsive breakpoints (mobile / tablet / desktop)
 - [ ] Performance check: `next build`, verify image optimization, no layout shift
-- [ ] Commit: `feat: phase 4 — video, design, awards, contact, polish`
+- [ ] Commit: `feat: phase 4 — video, design, info, polish`
 
 ### Phase 5 — Deployment [ ]
 - [ ] Connect repo to Vercel
