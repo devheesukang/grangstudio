@@ -49,6 +49,29 @@ Personal portfolio website for **Kang Bosun (강보선)**, photographer and vide
 - Toggle: icon-only button (sun/moon) in the navigation — no label
 - Persist user selection in localStorage (handled automatically by `next-themes`)
 
+## Design Variants
+
+The site ships with **3 distinct design variants** so the client can compare and choose. A variant switcher UI element (separate from the light/dark toggle) lets the viewer cycle between them in real time.
+
+**Purpose:** client preview and selection — the chosen variant becomes the final production design.
+
+**Architecture:**
+- Active variant stored in a `data-design` attribute on `<html>` (e.g. `data-design="v1"`)
+- Each variant is a set of CSS custom properties scoped to `[data-design="v1"]` etc.
+- Light/dark theme and design variant are fully independent — each variant works in both themes
+- Variant choice persisted in `localStorage` alongside theme preference
+- Switcher component: small, unobtrusive — positioned bottom-right or top-right of nav, labeled `V1 / V2 / V3`
+- **Extensible by design** — adding V4 means adding a CSS block and a new switcher option; no structural changes needed
+
+**The 3 variants:**
+| Variant | File | Personality |
+|---|---|---|
+| V1 | `designs/v1-minimal.md` | Ultra-minimal, raw, lots of negative space |
+| V2 | `designs/v2-cinematic.md` | Dark, moody, full-bleed imagery, dramatic type |
+| V3 | `designs/v3-editorial.md` | Magazine/editorial, structured grid, refined typography |
+
+Each variant's full spec (colors, fonts, spacing, animation style, layout details) lives in its own file under `designs/`. CLAUDE.md does not duplicate that detail here.
+
 ## Responsive Breakpoints
 
 Mobile-first. Three layouts:
@@ -138,7 +161,6 @@ Only these elements appear on the site:
 - **Role:** Photographer & Video Director
 - **Bio (one line):** Visual storyteller based in Seoul, specializing in brand and content direction.
 - **Email:** wolfkang0514@naver.com
-- **Instagram:** @g.raang (봉사활동 동아리 그랑)
 
 Nothing else. No skills, no career history, no education, no awards on the site.
 
@@ -215,7 +237,9 @@ npm run typecheck # tsc --noEmit
 
 ### Commit & Push Workflow
 
-Commit and push at every meaningful milestone — not just end of phase. Rule of thumb: if a component works independently, commit it. Never batch multiple completed components into one commit.
+**Commits and pushes only happen during active phase execution — never during planning.**
+
+During a phase, commit + push at every meaningful milestone. Rule of thumb: if a component works independently, commit it. Never batch multiple completed components into one commit.
 
 **Within a phase, commit + push after each:**
 - New component is built and renders correctly
@@ -250,14 +274,16 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [ ] Scaffold Next.js 14+ project (`npx create-next-app@latest .` — TypeScript, Tailwind, App Router, src dir)
 - [ ] Add `notion_export/` to `.gitignore` (98MB source dump — not for version control)
 - [ ] Install dependencies: `next-themes`, `framer-motion`
-- [ ] Configure Tailwind: custom font variables, color tokens for light/dark, base spacing scale
+- [ ] Implement design variant system: `data-design` attribute on `<html>`, CSS custom properties per variant, `localStorage` persistence
+- [ ] Configure Tailwind: custom font variables, color tokens scoped per variant + theme, base spacing scale
 - [ ] Set up `next-themes` provider in root layout, `attribute="class"`, default `system`
-- [ ] Define global CSS: font imports (to be chosen), CSS custom properties for theme colors
-- [ ] Build `Nav` component: logo/wordmark left, anchor links center, theme toggle right — responsive (hamburger on mobile)
+- [ ] Define global CSS: font imports for all 3 variants, CSS custom properties for all variant × theme combinations
+- [ ] Build `Nav` component: logo/wordmark left, anchor links center, theme toggle + variant switcher right — responsive (hamburger on mobile)
 - [ ] Build `ThemeToggle` component: sun/moon icon only, no label
+- [ ] Build `VariantSwitcher` component: V1 / V2 / V3 labels, cycles variants, persists to localStorage
 - [ ] Build `Footer` component: minimal — name, year, email
-- [ ] Verify light/dark switch works, no flash on load
-- [ ] Commit: `feat: phase 1 — foundation, layout, theme system`
+- [ ] Verify light/dark + all 3 variants work in combination, no flash on load
+- [ ] Commit + push: `feat: phase 1 — foundation, theme system, design variants`
 
 ### Phase 2 — Hero [ ]
 > Checkpoint: review design direction before building remaining sections.
