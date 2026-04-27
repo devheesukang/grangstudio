@@ -270,32 +270,32 @@ Never use `git add .` or `git add -A` — always stage specific files to avoid a
 
 Phases are completed sequentially. Each ends with a git commit. Check off tasks as done.
 
-### Phase 1 — Foundation [ ]
+### Phase 1 — Foundation [x]
 > Goal: establish the full visual and technical base. Everything else inherits from this.
 
-- [ ] Scaffold Next.js 14+ project (`npx create-next-app@latest .` — TypeScript, Tailwind, App Router, src dir)
-- [ ] Add `notion_export/` to `.gitignore` (98MB source dump — not for version control)
-- [ ] Install dependencies: `next-themes`, `framer-motion`
-- [ ] Implement design variant system: `data-design` attribute on `<html>`, CSS custom properties per variant, `localStorage` persistence
-- [ ] Configure Tailwind: custom font variables, color tokens scoped per variant + theme, base spacing scale
-- [ ] Set up `next-themes` provider in root layout, `attribute="class"`, default `system`
-- [ ] Define global CSS: font imports for all 3 variants, CSS custom properties for all variant × theme combinations
-- [ ] Build `Nav` component: logo/wordmark left, anchor links center, theme toggle + variant switcher right — responsive (hamburger on mobile)
-- [ ] Build `ThemeToggle` component: sun/moon icon only, no label
-- [ ] Build `VariantSwitcher` component: V1 / V2 / V3 labels, cycles variants, persists to localStorage
-- [ ] Build `Footer` component: minimal — name, year, email
-- [ ] Verify light/dark + all 3 variants work in combination, no flash on load
-- [ ] Commit + push: `feat: phase 1 — foundation, theme system, design variants`
+- [x] Scaffold Next.js 14+ project (`npx create-next-app@latest .` — TypeScript, Tailwind, App Router, src dir)
+- [x] Add `notion_export/` to `.gitignore` (98MB source dump — not for version control)
+- [x] Install dependencies: `next-themes`, `framer-motion`
+- [x] Implement design variant system: `data-design` attribute on `<html>`, CSS custom properties per variant, `localStorage` persistence
+- [x] Configure Tailwind: custom font variables, color tokens scoped per variant + theme, base spacing scale
+- [x] Set up `next-themes` provider in root layout, `attribute="class"`, default `system`
+- [x] Define global CSS: font imports for all 3 variants, CSS custom properties for all variant × theme combinations
+- [x] Build `Nav` component: logo/wordmark left, anchor links center, theme toggle + variant switcher right — responsive (hamburger on mobile)
+- [x] Build `ThemeToggle` component: sun/moon icon only, no label
+- [x] Build `VariantSwitcher` component: V1 / V2 / V3 labels, cycles variants, persists to localStorage
+- [x] Build `Footer` component: minimal — name, year, email
+- [x] Verify light/dark + all 3 variants work in combination, no flash on load
+- [x] Commit + push: `feat: phase 1 — foundation, theme system, design variants`
 
-### Phase 2 — Hero [ ]
+### Phase 2 — Hero [x]
 > Checkpoint: review design direction before building remaining sections.
 
-- [ ] Build `Hero` section: full-viewport, atmospheric, name + role in large type, entrance animation
-- [ ] Confirm scroll transition from Hero into the next section feels intentional
-- [ ] Confirm responsive layout on mobile / tablet / desktop
-- [ ] Confirm light/dark rendering feels right (cinematic dark / editorial light)
-- [ ] **User review checkpoint** — approve design direction before proceeding to Phase 3
-- [ ] Commit: `feat: phase 2 — hero section`
+- [x] Build `Hero` section: full-viewport, atmospheric, name + role in large type, entrance animation
+- [x] Confirm scroll transition from Hero into the next section feels intentional
+- [x] Confirm responsive layout on mobile / tablet / desktop
+- [x] Confirm light/dark rendering feels right (cinematic dark / editorial light)
+- [x] **User review checkpoint** — approved: "Grang Studio" branding applied across all three variants
+- [x] Commit: `feat: phase 2 — hero section`
 
 ### Phase 3 — Photography Gallery [ ]
 > Most complex phase. Requires image organization before wiring up the gallery.

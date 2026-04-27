@@ -1,20 +1,11 @@
 import { Hero } from '@/components/sections/Hero'
+import { Photography } from '@/components/sections/Photography'
 
 export default function Home() {
   return (
     <>
       <Hero />
-
-      {/* Photography — Phase 3 */}
-      <section
-        id="photography"
-        className="min-h-screen flex items-center justify-center border-t"
-        style={{ borderColor: 'var(--line)' }}
-      >
-        <p className="text-[10px] tracking-widest uppercase opacity-30">
-          Photography — Phase 3
-        </p>
-      </section>
+      <Photography />
 
       {/* Video — Phase 4 */}
       <section
