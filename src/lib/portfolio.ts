@@ -13,7 +13,7 @@ export type Category =
   | 'rise-interior'
   | 'rise-website'
 
-export type FilterGroup = 'all' | 'product' | 'portrait' | 'fine-art' | 'interior'
+export type FilterGroup = 'all' | 'product' | 'portrait' | 'fine-art' | 'ai' | 'interior'
 
 export interface Project {
   id: string
@@ -42,9 +42,10 @@ export interface DesignWork {
 
 export const FILTER_LABELS: Record<FilterGroup, string> = {
   all: 'All',
-  product: 'Product',
+  product: 'Still Life',
   portrait: 'Portrait',
   'fine-art': 'Fine Art',
+  ai: 'AI',
   interior: 'Interior',
 }
 
@@ -149,7 +150,7 @@ export const projects: Project[] = [
     id: 'ai-work',
     title: 'AI Work',
     category: 'ai-work',
-    filterGroup: 'fine-art',
+    filterGroup: 'ai',
     images: [
       '/images/ai-work/ai-portrait-1.png',
       '/images/ai-work/ai-portrait-2.png',

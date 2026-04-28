@@ -352,11 +352,11 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Commit: `feat: add hero background image to all variants`
 
 **Gallery — filter labels & AI category:**
-- [ ] `src/lib/portfolio.ts`: rename `FILTER_LABELS.product` from `'Product'` → `'Still Life'`
-- [ ] `src/lib/portfolio.ts`: add `'ai'` to `FilterGroup` type and `FILTER_GROUPS`, add `FILTER_LABELS.ai: 'AI'`
-- [ ] `src/lib/portfolio.ts`: change `ai-work` project's `filterGroup` from `'fine-art'` → `'ai'`
-- [ ] `src/components/sections/Photography.tsx`: add `'ai'` to `FILTER_GROUPS` array (it reads the array to render tabs — no other change needed)
-- [ ] Commit: `feat: add AI filter tab, rename Product to Still Life`
+- [x] `src/lib/portfolio.ts`: rename `FILTER_LABELS.product` from `'Product'` → `'Still Life'`
+- [x] `src/lib/portfolio.ts`: add `'ai'` to `FilterGroup` type and `FILTER_GROUPS`, add `FILTER_LABELS.ai: 'AI'`
+- [x] `src/lib/portfolio.ts`: change `ai-work` project's `filterGroup` from `'fine-art'` → `'ai'`
+- [x] `src/components/sections/Photography.tsx`: add `'ai'` to `FILTER_GROUPS` array (it reads the array to render tabs — no other change needed)
+- [x] Commit: `feat: add AI filter tab, rename Product to Still Life`
 
 **Gallery — hide behind images:**
 - [ ] `src/lib/portfolio.ts`: remove `fine-art-behind-1.jpg` and `fine-art-behind-2.jpg` from the `fine-art` project's `images` array (files stay on disk)
