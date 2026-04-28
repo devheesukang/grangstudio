@@ -257,18 +257,21 @@ export const videos: VideoProject[] = [
     title: 'Lotte World — Autumn Season',
     titleKo: '롯데월드 가을 시즌 홍보영상',
     year: '2024',
+    youtubeId: '2nlyITLXdY0',
   },
   {
     id: 'lotte-winter',
     title: 'Lotte World — Winter Season',
     titleKo: '롯데월드 겨울 시즌 홍보영상',
     year: '2024',
+    youtubeId: 'AtQdyh_kXz0',
   },
   {
     id: 'rise-online-lectures',
-    title: 'RISE Online English Lectures (47 episodes)',
+    title: 'RISE Online English Lectures',
     titleKo: 'RISE 온라인 영어 강의 47편',
     year: '2022',
+    youtubeId: 'zbGUMiUtid0',
   },
 ]
 
