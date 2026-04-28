@@ -398,7 +398,7 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 
 **Hero background image visibility:**
 - [x] Current issue: `public/images/cosmetics/foundation-1.jpg` is too invisible at the current subtle opacity (`opacity-[0.12]`).
-- [x] Fix: increase hero background opacity to `opacity-[0.32]`.
+- [x] Fix: increase hero background opacity to `opacity-[0.52]`.
 - [x] Add an image-layer fade/mask toward the bottom so the image remains more visible through the main hero area but becomes more hidden behind the bottom gradient / large "Grang Studio" text area.
 
 **V1 dark mode text contrast:**

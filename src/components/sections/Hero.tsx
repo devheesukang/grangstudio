@@ -39,7 +39,7 @@ function HeroV1() {
           alt=""
           fill
           priority
-          className="object-cover opacity-[0.32]"
+          className="object-cover opacity-[0.52]"
           sizes="100vw"
         />
       </div>
@@ -140,7 +140,7 @@ function HeroV2() {
           alt=""
           fill
           priority
-          className="object-cover opacity-[0.32]"
+          className="object-cover opacity-[0.52]"
           sizes="100vw"
         />
       </div>
@@ -252,7 +252,7 @@ function HeroV3() {
           alt=""
           fill
           priority
-          className="object-cover opacity-[0.32]"
+          className="object-cover opacity-[0.52]"
           sizes="100vw"
         />
       </div>
