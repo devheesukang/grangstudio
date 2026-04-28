@@ -58,17 +58,52 @@ export function Info() {
           specializing in brand and content direction.
         </motion.p>
 
-        <motion.a
-          href="mailto:wolfkang0514@naver.com"
-          className="text-[10px] tracking-widest uppercase transition-opacity hover:opacity-60 inline-block"
-          style={{ color: 'var(--fg)' }}
+        <motion.div
+          className="flex flex-col gap-3"
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.7, delay: 0.28 }}
         >
-          wolfkang0514@naver.com
-        </motion.a>
+          <a
+            href="mailto:wolfkang0514@naver.com"
+            className="text-[10px] tracking-widest lowercase transition-opacity hover:opacity-60 inline-block"
+            style={{ color: 'var(--fg)' }}
+          >
+            wolfkang0514@naver.com
+          </a>
+
+          <span
+            className="text-[10px] tracking-widest inline-block"
+            style={{ color: 'var(--muted)' }}
+          >
+            010-6401-0514
+          </span>
+
+          <a
+            href="https://www.instagram.com/studio.grang/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 transition-opacity hover:opacity-60"
+            style={{ color: 'var(--muted)' }}
+          >
+            <svg
+              width="14"
+              height="14"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="1.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <rect x="2" y="2" width="20" height="20" rx="5" ry="5" />
+              <circle cx="12" cy="12" r="4" />
+              <circle cx="17.5" cy="6.5" r="0.5" fill="currentColor" />
+            </svg>
+            <span className="text-[10px] tracking-widest">studio.grang</span>
+          </a>
+        </motion.div>
       </div>
     </section>
   )

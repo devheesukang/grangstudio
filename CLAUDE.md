@@ -368,10 +368,10 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Commit: `style: larger photography section heading and filter buttons`
 
 **Info section — contact details:**
-- [ ] `src/components/sections/Info.tsx`: add `lowercase` class (or `style={{ textTransform: 'lowercase' }}`) to email `<a>` element
-- [ ] Add phone number `010-6401-0514` below email, same minimal style
-- [ ] Add Instagram row: gray Instagram SVG icon + `studio.grang` handle as `<a href="https://www.instagram.com/studio.grang/" target="_blank" rel="noopener noreferrer">`, hover opacity
-- [ ] Commit: `feat: info section — lowercase email, phone, Instagram link`
+- [x] `src/components/sections/Info.tsx`: add `lowercase` class (or `style={{ textTransform: 'lowercase' }}`) to email `<a>` element
+- [x] Add phone number `010-6401-0514` below email, same minimal style
+- [x] Add Instagram row: gray Instagram SVG icon + `studio.grang` handle as `<a href="https://www.instagram.com/studio.grang/" target="_blank" rel="noopener noreferrer">`, hover opacity
+- [x] Commit: `feat: info section — lowercase email, phone, Instagram link`
 
 **Image download protection:**
 - [ ] `src/components/ui/GalleryGrid.tsx`: add `onContextMenu={(e) => e.preventDefault()}` to each gallery item wrapper
