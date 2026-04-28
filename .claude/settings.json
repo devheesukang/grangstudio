@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm i *)",
+      "Bash(sudo npm *)",
+      "Bash(npx vercel *)",
+      "Bash(~/.local/bin/vercel --version)",
+      "Bash(export PATH=\"$HOME/.local/bin:$PATH\")",
+      "Bash(vercel --version)",
+      "mcp__plugin_vercel_vercel__deploy_to_vercel",
+      "Bash(~/.local/bin/vercel deploy *)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)"
+    ]
+  }
+}
