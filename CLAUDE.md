@@ -64,11 +64,13 @@ The site ships with **3 distinct design variants** so the client can compare and
 - **Extensible by design** — adding V4 means adding a CSS block and a new switcher option; no structural changes needed
 
 **The 3 variants:**
-| Variant | File | Personality |
-|---|---|---|
-| V1 | `designs/v1-minimal.md` | Ultra-minimal, raw, lots of negative space |
-| V2 | `designs/v2-cinematic.md` | Dark, moody, full-bleed imagery, dramatic type |
-| V3 | `designs/v3-editorial.md` | Magazine/editorial, structured grid, refined typography |
+| Variant | File | Personality | Display Font | Accent |
+|---|---|---|---|---|
+| V1 | `designs/v1-minimal.md` | Cinematic, dark/moody, dramatic scale — the approved direction | Bebas Neue | Gold `#C8A96E` |
+| V2 | `designs/v2-cinematic.md` | Embers — same cinematic energy, copper/rust accent, warmer earth tones | Bebas Neue | Copper `#C1714A` |
+| V3 | `designs/v3-editorial.md` | Slate — contemporary studio, geometric Syne font, cool slate-blue accent | Syne (new) | Slate `#6B8CAE` |
+
+**Hero image rule:** All three variants use `public/images/cosmetics/foundation-1.jpg` as a subtle full-bleed background (opacity ≈ 0.12). It is atmospheric texture, not a dominant image — type and content remain primary.
 
 Each variant's full spec (colors, fonts, spacing, animation style, layout details) lives in its own file under `designs/`. CLAUDE.md does not duplicate that detail here.
 
@@ -122,9 +124,10 @@ Prefer `_크게` (large) versions over `_복사` (copy) versions where both exis
 
 **Gallery groupings for UI filter tabs:**
 - All
-- Product (cosmetics, watch, glass, glasses, vase)
+- Still Life (cosmetics, watch, glass, glasses, vase) — formerly "Product"
 - Portrait
-- Fine Art (fine-art, light-painting, ai-work, assignment)
+- Fine Art (fine-art, light-painting, assignment)
+- AI (ai-work) — new dedicated tab
 - Interior (airbnb, rise-interior, rise-website)
 
 ### Video Projects
@@ -319,11 +322,64 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Performance check: `next build`, verify image optimization, no layout shift
 - [x] Commit: `feat: phase 4 — video, design, info, polish`
 
-### Phase 5 — Deployment [ ]
-- [ ] Connect repo to Vercel
-- [ ] Verify production build on Vercel preview URL
-- [ ] Set custom domain if available
-- [ ] Commit: `chore: production deployment setup`
+### Phase 5 — Deployment [x]
+- [x] Connect repo to Vercel
+- [x] Verify production build on Vercel preview URL
+- [x] Commit: `chore: production deployment setup`
+
+### Phase 6 — Client Edit Round 1 [ ]
+> Goal: apply first round of client-requested changes across design variants, gallery, and contact info.
+
+**Variant rotation & new designs:**
+- [ ] Rotate variants: old V2 (Cinematic/Bebas/Gold) → new V1. Retire old V1 (Cormorant/Minimal) and V3 (Playfair/Editorial).
+- [ ] New V2 — "Embers" (Copper/Rust): Bebas Neue display + DM Sans body, accent `#C1714A`, light bg `#F6F1EC`, dark bg `#100907`
+- [ ] New V3 — "Slate" (Contemporary): **Syne** display (new font import) + DM Sans body, accent `#6B8CAE`, light bg `#F3F4F7`, dark bg `#080B10`
+- [ ] Add `Syne` to `src/app/layout.tsx` via `next/font/google`, expose as `--font-syne` variable
+- [ ] Update `src/app/globals.css`: rewrite all three `[data-design]` blocks with new palettes and font references
+- [ ] Update `src/components/sections/Hero.tsx`: old HeroV2 → HeroV1, write new HeroV2 (Embers) and HeroV3 (Slate)
+- [ ] Update `designs/` spec files to reflect new variant personalities
+- [ ] Commit: `feat: rotate design variants — V1=cinematic-gold, V2=embers, V3=slate`
+
+**Hero background image:**
+- [ ] Add `foundation-1.jpg` (`public/images/cosmetics/foundation-1.jpg`) as a subtle full-bleed background to all three hero variants
+- [ ] Use `next/image` with `fill` + `object-cover`, `priority` prop, opacity ≈ 0.12 (atmospheric, not dominant)
+- [ ] Place image layer behind all content divs using `absolute inset-0`
+- [ ] Commit: `feat: add hero background image to all variants`
+
+**Gallery — filter labels & AI category:**
+- [ ] `src/lib/portfolio.ts`: rename `FILTER_LABELS.product` from `'Product'` → `'Still Life'`
+- [ ] `src/lib/portfolio.ts`: add `'ai'` to `FilterGroup` type and `FILTER_GROUPS`, add `FILTER_LABELS.ai: 'AI'`
+- [ ] `src/lib/portfolio.ts`: change `ai-work` project's `filterGroup` from `'fine-art'` → `'ai'`
+- [ ] `src/components/sections/Photography.tsx`: add `'ai'` to `FILTER_GROUPS` array (it reads the array to render tabs — no other change needed)
+- [ ] Commit: `feat: add AI filter tab, rename Product to Still Life`
+
+**Gallery — hide behind images:**
+- [ ] `src/lib/portfolio.ts`: remove `fine-art-behind-1.jpg` and `fine-art-behind-2.jpg` from the `fine-art` project's `images` array (files stay on disk)
+- [ ] Commit: `content: hide fine-art behind images from gallery`
+
+**Photography section — bigger text:**
+- [ ] `src/components/sections/Photography.tsx`: increase section label from `text-[9px]` to `text-xs` or `text-sm`
+- [ ] Increase filter button font from `text-[10px]` to `text-xs`, increase padding (`px-5 py-2` or similar)
+- [ ] Commit: `style: larger photography section heading and filter buttons`
+
+**Info section — contact details:**
+- [ ] `src/components/sections/Info.tsx`: add `lowercase` class (or `style={{ textTransform: 'lowercase' }}`) to email `<a>` element
+- [ ] Add phone number `010-6401-0514` below email, same minimal style
+- [ ] Add Instagram row: gray Instagram SVG icon + `studio.grang` handle as `<a href="https://www.instagram.com/studio.grang/" target="_blank" rel="noopener noreferrer">`, hover opacity
+- [ ] Commit: `feat: info section — lowercase email, phone, Instagram link`
+
+**Image download protection:**
+- [ ] `src/components/ui/GalleryGrid.tsx`: add `onContextMenu={(e) => e.preventDefault()}` to each gallery item wrapper
+- [ ] Add `draggable={false}` to each `<Image>` component
+- [ ] Add transparent overlay `<div>` (`position: absolute, inset: 0, z-index: 1`) on each gallery item to intercept pointer events
+- [ ] Note: this is a deterrent — motivated users can still access images via DevTools
+- [ ] Commit: `feat: block right-click image download in gallery`
+
+**CLAUDE.md update:**
+- [ ] Update variant table to reflect V1=Cinematic/Gold, V2=Embers/Copper, V3=Slate/Syne
+- [ ] Update gallery groupings table: Product → Still Life, add AI row
+- [ ] Update hero image rule: all variants now use `foundation-1.jpg` as subtle background
+- [ ] Commit: `chore: update CLAUDE.md for Phase 6 changes`
 
 ---
 
@@ -332,3 +388,4 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - `notion_export/` is source-only — never import from it directly in the app
 - All UI text in English; Korean appears only in alt text or metadata where helpful for SEO
 - The studio name "Grang Studio" comes from 봉사활동 동아리 그랑 (volunteer club "Grang") which Bosun ran 2015–2022 — it's personal and meaningful
+- `npx plugins add vercel/vercel-plugin` run this for vercel plugin. also check for other mcp server or any add ons that would help for this project managment.
