@@ -346,10 +346,10 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Commit: `feat: rotate design variants — V1=cinematic-gold, V2=embers, V3=slate`
 
 **Hero background image:**
-- [ ] Add `foundation-1.jpg` (`public/images/cosmetics/foundation-1.jpg`) as a subtle full-bleed background to all three hero variants
-- [ ] Use `next/image` with `fill` + `object-cover`, `priority` prop, opacity ≈ 0.12 (atmospheric, not dominant)
-- [ ] Place image layer behind all content divs using `absolute inset-0`
-- [ ] Commit: `feat: add hero background image to all variants`
+- [x] Add `foundation-1.jpg` (`public/images/cosmetics/foundation-1.jpg`) as a subtle full-bleed background to all three hero variants
+- [x] Use `next/image` with `fill` + `object-cover`, `priority` prop, opacity ≈ 0.12 (atmospheric, not dominant)
+- [x] Place image layer behind all content divs using `absolute inset-0`
+- [x] Commit: `feat: add hero background image to all variants`
 
 **Gallery — filter labels & AI category:**
 - [ ] `src/lib/portfolio.ts`: rename `FILTER_LABELS.product` from `'Product'` → `'Still Life'`

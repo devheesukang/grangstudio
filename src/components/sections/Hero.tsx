@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import { motion } from 'framer-motion'
 import { useVariant } from '@/lib/design-variant'
 
@@ -16,6 +17,8 @@ const fadeUp = {
   }),
 }
 
+const heroBg = '/images/cosmetics/foundation-1.jpg'
+
 /* ─── V1: Cinematic / Gold ──────────────────────────────────── */
 function HeroV1() {
   return (
@@ -23,6 +26,18 @@ function HeroV1() {
       id="hero"
       className="relative min-h-screen flex flex-col justify-end pb-20 px-8 md:px-16 overflow-hidden"
     >
+      {/* Background image — atmospheric, not dominant */}
+      <div className="absolute inset-0 pointer-events-none">
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-[0.12]"
+          sizes="100vw"
+        />
+      </div>
+
       {/* Subtle noise grain */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -106,6 +121,18 @@ function HeroV2() {
       id="hero"
       className="relative min-h-screen flex flex-col justify-end pb-20 px-8 md:px-16 overflow-hidden"
     >
+      {/* Background image — atmospheric, not dominant */}
+      <div className="absolute inset-0 pointer-events-none">
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-[0.12]"
+          sizes="100vw"
+        />
+      </div>
+
       {/* Subtle noise grain */}
       <div
         className="absolute inset-0 opacity-[0.04] pointer-events-none"
@@ -200,6 +227,18 @@ function HeroV3() {
       id="hero"
       className="relative min-h-screen flex flex-col justify-center px-8 md:px-16 lg:px-24 overflow-hidden"
     >
+      {/* Background image — atmospheric, not dominant */}
+      <div className="absolute inset-0 pointer-events-none">
+        <Image
+          src={heroBg}
+          alt=""
+          fill
+          priority
+          className="object-cover opacity-[0.12]"
+          sizes="100vw"
+        />
+      </div>
+
       {/* Geometric accent — vertical right bar */}
       <motion.div
         className="absolute right-8 md:right-16 top-1/2 -translate-y-1/2 w-px"
