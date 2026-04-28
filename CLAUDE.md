@@ -374,11 +374,11 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Commit: `feat: info section — lowercase email, phone, Instagram link`
 
 **Image download protection:**
-- [ ] `src/components/ui/GalleryGrid.tsx`: add `onContextMenu={(e) => e.preventDefault()}` to each gallery item wrapper
-- [ ] Add `draggable={false}` to each `<Image>` component
-- [ ] Add transparent overlay `<div>` (`position: absolute, inset: 0, z-index: 1`) on each gallery item to intercept pointer events
-- [ ] Note: this is a deterrent — motivated users can still access images via DevTools
-- [ ] Commit: `feat: block right-click image download in gallery`
+- [x] `src/components/ui/GalleryGrid.tsx`: add `onContextMenu={(e) => e.preventDefault()}` to each gallery item wrapper
+- [x] Add `draggable={false}` to each `<Image>` component
+- [x] Add transparent overlay `<div>` (`position: absolute, inset: 0, z-index: 1`) on each gallery item to intercept pointer events
+- [x] Note: this is a deterrent — motivated users can still access images via DevTools
+- [x] Commit: `feat: block right-click image download in gallery`
 
 **CLAUDE.md update:**
 - [ ] Update variant table to reflect V1=Cinematic/Gold, V2=Embers/Copper, V3=Slate/Syne

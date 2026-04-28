@@ -38,6 +38,7 @@ export function GalleryGrid({ items }: GalleryGridProps) {
           viewport={{ once: true, margin: '-60px' }}
           className="break-inside-avoid mb-3 md:mb-4 overflow-hidden"
           style={{ border: '1px solid var(--line)' }}
+          onContextMenu={(e) => e.preventDefault()}
         >
           <div className="relative w-full group cursor-pointer">
             <Image
@@ -45,9 +46,12 @@ export function GalleryGrid({ items }: GalleryGridProps) {
               alt={alt}
               width={800}
               height={600}
+              draggable={false}
               className="w-full h-auto block transition-transform duration-700 group-hover:scale-[1.03]"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
             />
+            {/* Transparent overlay — deters casual right-click / drag download */}
+            <div className="absolute inset-0 z-10" />
           </div>
         </motion.div>
       ))}
