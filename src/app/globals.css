@@ -4,35 +4,9 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* ================================
-   DESIGN VARIANT: V1 — Minimal
+   DESIGN VARIANT: V1 — Cinematic / Gold
    ================================ */
 html[data-design="v1"] {
-  --bg: #F8F7F4;
-  --fg: #0A0A0A;
-  --muted: #8A8A8A;
-  --line: #E0DED9;
-  --accent: #0A0A0A;
-  --nav-initial-bg: transparent;
-  --nav-scrolled-bg: rgba(248, 247, 244, 0.92);
-  --nav-fg: var(--fg);
-  --grang-font-display: var(--font-cormorant);
-  --grang-font-body: var(--font-inter);
-  --grang-font-sub: var(--font-inter);
-}
-html.dark[data-design="v1"] {
-  --bg: #0C0C0C;
-  --fg: #F0EDE8;
-  --muted: #666660;
-  --line: #222220;
-  --accent: #F0EDE8;
-  --nav-scrolled-bg: rgba(12, 12, 12, 0.92);
-  --nav-fg: var(--fg);
-}
-
-/* ================================
-   DESIGN VARIANT: V2 — Cinematic
-   ================================ */
-html[data-design="v2"] {
   --bg: #F2F0EB;
   --fg: #111111;
   --muted: #555555;
@@ -45,7 +19,7 @@ html[data-design="v2"] {
   --grang-font-body: var(--font-dm-sans);
   --grang-font-sub: var(--font-cormorant);
 }
-html.dark[data-design="v2"] {
+html.dark[data-design="v1"] {
   --bg: #080808;
   --fg: #EBEBEB;
   --muted: #999999;
@@ -57,32 +31,57 @@ html.dark[data-design="v2"] {
 }
 
 /* ================================
-   DESIGN VARIANT: V3 — Editorial
+   DESIGN VARIANT: V2 — Embers / Copper
+   ================================ */
+html[data-design="v2"] {
+  --bg: #F6F1EC;
+  --fg: #111111;
+  --muted: #666666;
+  --line: #DDD7D0;
+  --accent: #C1714A;
+  --nav-initial-bg: transparent;
+  --nav-scrolled-bg: rgba(246, 241, 236, 0.92);
+  --nav-fg: var(--fg);
+  --grang-font-display: var(--font-bebas);
+  --grang-font-body: var(--font-dm-sans);
+  --grang-font-sub: var(--font-dm-sans);
+}
+html.dark[data-design="v2"] {
+  --bg: #100907;
+  --fg: #EDE8E3;
+  --muted: #998880;
+  --line: #1F1411;
+  --accent: #C1714A;
+  --nav-initial-bg: rgba(16, 9, 7, 0.6);
+  --nav-scrolled-bg: rgba(16, 9, 7, 0.95);
+  --nav-fg: rgba(237, 232, 227, 0.85);
+}
+
+/* ================================
+   DESIGN VARIANT: V3 — Slate / Contemporary
    ================================ */
 html[data-design="v3"] {
-  --bg: #FAFAF8;
-  --fg: #1A1A1A;
-  --muted: #6B6B6B;
-  --line: #E8E6E1;
-  --accent: #1A1A1A;
-  --rule: #1A1A1A;
-  --nav-initial-bg: rgba(250, 250, 248, 1);
-  --nav-scrolled-bg: rgba(250, 250, 248, 1);
+  --bg: #F3F4F7;
+  --fg: #111111;
+  --muted: #666666;
+  --line: #D8DAE0;
+  --accent: #6B8CAE;
+  --nav-initial-bg: transparent;
+  --nav-scrolled-bg: rgba(243, 244, 247, 0.92);
   --nav-fg: var(--fg);
-  --grang-font-display: var(--font-playfair);
+  --grang-font-display: var(--font-syne);
   --grang-font-body: var(--font-dm-sans);
-  --grang-font-sub: var(--font-playfair);
+  --grang-font-sub: var(--font-dm-sans);
 }
 html.dark[data-design="v3"] {
-  --bg: #141412;
-  --fg: #F4F2EE;
-  --muted: #888880;
-  --line: #2A2A28;
-  --accent: #F4F2EE;
-  --rule: #F4F2EE;
-  --nav-initial-bg: rgba(20, 20, 18, 1);
-  --nav-scrolled-bg: rgba(20, 20, 18, 1);
-  --nav-fg: var(--fg);
+  --bg: #080B10;
+  --fg: #E8EAF0;
+  --muted: #888899;
+  --line: #141820;
+  --accent: #6B8CAE;
+  --nav-initial-bg: rgba(8, 11, 16, 0.6);
+  --nav-scrolled-bg: rgba(8, 11, 16, 0.95);
+  --nav-fg: rgba(232, 234, 240, 0.85);
 }
 
 /* Tailwind v4 color + font tokens */

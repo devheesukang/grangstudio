@@ -336,14 +336,14 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 > Goal: apply first round of client-requested changes across design variants, gallery, and contact info.
 
 **Variant rotation & new designs:**
-- [ ] Rotate variants: old V2 (Cinematic/Bebas/Gold) → new V1. Retire old V1 (Cormorant/Minimal) and V3 (Playfair/Editorial).
-- [ ] New V2 — "Embers" (Copper/Rust): Bebas Neue display + DM Sans body, accent `#C1714A`, light bg `#F6F1EC`, dark bg `#100907`
-- [ ] New V3 — "Slate" (Contemporary): **Syne** display (new font import) + DM Sans body, accent `#6B8CAE`, light bg `#F3F4F7`, dark bg `#080B10`
-- [ ] Add `Syne` to `src/app/layout.tsx` via `next/font/google`, expose as `--font-syne` variable
-- [ ] Update `src/app/globals.css`: rewrite all three `[data-design]` blocks with new palettes and font references
-- [ ] Update `src/components/sections/Hero.tsx`: old HeroV2 → HeroV1, write new HeroV2 (Embers) and HeroV3 (Slate)
-- [ ] Update `designs/` spec files to reflect new variant personalities
-- [ ] Commit: `feat: rotate design variants — V1=cinematic-gold, V2=embers, V3=slate`
+- [x] Rotate variants: old V2 (Cinematic/Bebas/Gold) → new V1. Retire old V1 (Cormorant/Minimal) and V3 (Playfair/Editorial).
+- [x] New V2 — "Embers" (Copper/Rust): Bebas Neue display + DM Sans body, accent `#C1714A`, light bg `#F6F1EC`, dark bg `#100907`
+- [x] New V3 — "Slate" (Contemporary): **Syne** display (new font import) + DM Sans body, accent `#6B8CAE`, light bg `#F3F4F7`, dark bg `#080B10`
+- [x] Add `Syne` to `src/app/layout.tsx` via `next/font/google`, expose as `--font-syne` variable
+- [x] Update `src/app/globals.css`: rewrite all three `[data-design]` blocks with new palettes and font references
+- [x] Update `src/components/sections/Hero.tsx`: old HeroV2 → HeroV1, write new HeroV2 (Embers) and HeroV3 (Slate)
+- [x] Update `designs/` spec files to reflect new variant personalities
+- [x] Commit: `feat: rotate design variants — V1=cinematic-gold, V2=embers, V3=slate`
 
 **Hero background image:**
 - [ ] Add `foundation-1.jpg` (`public/images/cosmetics/foundation-1.jpg`) as a subtle full-bleed background to all three hero variants

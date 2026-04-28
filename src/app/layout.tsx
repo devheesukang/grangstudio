@@ -4,7 +4,7 @@ import {
   Cormorant_Garamond,
   Bebas_Neue,
   DM_Sans,
-  Playfair_Display,
+  Syne,
 } from 'next/font/google'
 import { ThemeProvider } from 'next-themes'
 import { DesignVariantProvider } from '@/lib/design-variant'
@@ -39,11 +39,10 @@ const dmSans = DM_Sans({
   display: 'swap',
 })
 
-const playfair = Playfair_Display({
+const syne = Syne({
   subsets: ['latin'],
-  weight: ['400', '600', '700'],
-  style: ['normal', 'italic'],
-  variable: '--font-playfair',
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-syne',
   display: 'swap',
 })
 
@@ -62,7 +61,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         cormorant.variable,
         bebas.variable,
         dmSans.variable,
-        playfair.variable,
+        syne.variable,
       ].join(' ')}
     >
       <head>
