@@ -252,9 +252,14 @@ During a phase, commit + push at every meaningful milestone. Rule of thumb: if a
 - Image organization batch (per category)
 - Content data file created or updated
 
+**Before every commit during a phase:**
+1. Tick the completed checklist items in CLAUDE.md (`[ ]` → `[x]`)
+2. Stage CLAUDE.md alongside the other changed files
+3. The commit message should reflect what was just completed
+
 **Always push immediately after committing:**
 ```bash
-git add <specific files>
+git add <specific files> CLAUDE.md
 git commit -m "type: description
 
 Co-Authored-By: Claude Sonnet 4.6 <noreply@anthropic.com>"
