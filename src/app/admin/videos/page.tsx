@@ -16,6 +16,8 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar'
+import { useAdminDirtyGuard } from '@/hooks/useAdminDirtyGuard'
 import type { ContentConfig, VideoConfig } from '@/lib/adminContent'
 
 function toYouTubeWatchUrl(id: string): string {
@@ -256,14 +258,18 @@ export default function VideosAdminPage() {
   const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle')
   const [editingId, setEditingId] = useState<string | null>(null)
   const [showAddForm, setShowAddForm] = useState(false)
+  const { dirty, markSaved } = useAdminDirtyGuard(config)
 
   const sensors = useSensors(useSensor(PointerSensor))
 
   useEffect(() => {
     fetch('/api/admin/content')
       .then((r) => r.json())
-      .then(setConfig)
-  }, [])
+      .then((data) => {
+        setConfig(data)
+        markSaved(data)
+      })
+  }, [markSaved])
 
   function setVideos(updater: (prev: VideoConfig[]) => VideoConfig[]) {
     setConfig((prev) => (prev ? { ...prev, videos: updater(prev.videos) } : prev))
@@ -308,7 +314,12 @@ export default function VideosAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config),
       })
-      setStatus(res.ok ? 'saved' : 'error')
+      if (res.ok) {
+        markSaved(config)
+        setStatus('saved')
+      } else {
+        setStatus('error')
+      }
     } catch {
       setStatus('error')
     } finally {
@@ -327,25 +338,8 @@ export default function VideosAdminPage() {
 
   return (
     <div className="w-full overflow-x-hidden">
-      <main className="w-full max-w-3xl mx-auto px-4 py-10 sm:px-6 sm:py-12">
-        <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xs tracking-[0.5em] uppercase text-neutral-500">Videos</h1>
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            {status === 'saved' && (
-              <span className="text-xs text-emerald-400 tracking-widest uppercase">Saved</span>
-            )}
-            {status === 'error' && (
-              <span className="text-xs text-red-400 tracking-widest uppercase">Error — check Blob config</span>
-            )}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-white text-black text-xs font-medium px-5 py-2 tracking-widest uppercase hover:bg-neutral-200 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
-          </div>
-        </div>
+      <AdminSaveBar title="Videos" status={status} saving={saving} dirty={dirty} onSave={handleSave} />
+      <main className="w-full max-w-3xl mx-auto px-4 py-8 sm:px-6 sm:py-10">
 
         {showAddForm && (
           <VideoForm onSave={addVideo} onCancel={() => setShowAddForm(false)} />

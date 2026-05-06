@@ -1412,6 +1412,63 @@ When the admin deletes a custom tab/category, uploaded Blob images inside that c
 
 ---
 
+### Phase 21 — Admin Sticky Save Bar + Unsaved Changes Guard
+> Goal: make saving harder to miss on admin edit pages and warn admins only when they try to leave with actual unsaved changes.
+
+#### Summary of changes
+
+**1. Sticky save bar**
+
+Admin edit pages should use a sticky top action bar instead of a save button that scrolls away with the page header. The bar stays visible at the top of the content area across desktop, tablet, and mobile layouts. It contains the page title, save status, and Save button.
+
+Apply to the admin pages that edit persisted content:
+- `/admin/photography`
+- `/admin/videos`
+- `/admin/info`
+- `/admin/design`
+
+Dashboard and login do not need this because they do not edit content.
+
+**2. Shared dirty-state detection**
+
+Each admin edit page should store a serialized snapshot of the last loaded/saved config. The page is dirty only when the current config differs from that snapshot. After a successful save, the snapshot updates to the saved config.
+
+**3. Leave-page warning only when dirty**
+
+When dirty, admin pages should warn before:
+- browser refresh / tab close / external navigation via `beforeunload`
+- internal admin navigation through sidebar links or other anchor clicks
+
+Warning message:
+`변경사항이 저장되지 않을 수도 있습니다. 페이지를 떠나시겠습니까?`
+
+No warning should appear when no actual data changes exist.
+
+**4. Save button disabled state**
+
+The sticky Save button should be disabled when there are no unsaved changes or while saving. This makes the dirty state visible and avoids unnecessary writes.
+
+---
+
+#### Checklist
+
+**Shared admin save utilities:**
+- [x] Add reusable dirty-state hook for loaded/saved snapshots
+- [x] Add reusable sticky save bar component
+- [x] Add browser/internal navigation guard using the Korean warning message
+
+**Admin edit pages:**
+- [x] Update `/admin/photography` to use sticky save bar and dirty-state guard
+- [x] Update `/admin/videos` to use sticky save bar and dirty-state guard
+- [x] Update `/admin/info` to use sticky save bar and dirty-state guard
+- [x] Update `/admin/design` to use sticky save bar and dirty-state guard
+
+**Verification:**
+- [x] Run production build check (`npm run build`)
+- [x] Run lint check (`npm run lint`)
+
+---
+
 ## Notes
 - All UI text in English; Korean appears only in alt text or metadata where helpful for SEO
 - The studio name "Studio Grang" comes from 봉사활동 동아리 그랑 (volunteer club "Grang") which Bosun ran 2015–2022 — it's personal and meaningful

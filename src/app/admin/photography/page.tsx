@@ -17,6 +17,8 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { AdminSaveBar } from '@/components/admin/AdminSaveBar'
+import { useAdminDirtyGuard } from '@/hooks/useAdminDirtyGuard'
 import { projects as defaultProjects } from '@/lib/portfolio'
 import { getUploadedBlobPathname } from '@/lib/blobPath'
 import type { ContentConfig, ProjectConfig, ImageEntry } from '@/lib/adminContent'
@@ -196,12 +198,16 @@ export default function PhotographyAdminPage() {
   const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle')
   const [newTabKey, setNewTabKey] = useState('')
   const [newTabLabel, setNewTabLabel] = useState('')
+  const { dirty, markSaved } = useAdminDirtyGuard(config)
 
   useEffect(() => {
     fetch('/api/admin/content')
       .then((r) => r.json())
-      .then(setConfig)
-  }, [])
+      .then((data) => {
+        setConfig(data)
+        markSaved(data)
+      })
+  }, [markSaved])
 
   function updatePhotoConfig(updater: (prev: ContentConfig['photography']) => ContentConfig['photography']) {
     setConfig((prev) =>
@@ -365,7 +371,12 @@ export default function PhotographyAdminPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(config),
       })
-      setStatus(res.ok ? 'saved' : 'error')
+      if (res.ok) {
+        markSaved(config)
+        setStatus('saved')
+      } else {
+        setStatus('error')
+      }
     } catch {
       setStatus('error')
     } finally {
@@ -384,25 +395,8 @@ export default function PhotographyAdminPage() {
 
   return (
     <div className="w-full overflow-x-hidden">
-      <main className="w-full max-w-3xl mx-auto px-4 py-10 sm:px-6 sm:py-12">
-        <div className="flex flex-col gap-4 mb-10 sm:flex-row sm:items-center sm:justify-between">
-          <h1 className="text-xs tracking-[0.5em] uppercase text-neutral-500">Photography</h1>
-          <div className="flex flex-wrap items-center gap-3 sm:gap-4">
-            {status === 'saved' && (
-              <span className="text-xs text-emerald-400 tracking-widest uppercase">Saved</span>
-            )}
-            {status === 'error' && (
-              <span className="text-xs text-red-400 tracking-widest uppercase">Error — check Blob config</span>
-            )}
-            <button
-              onClick={handleSave}
-              disabled={saving}
-              className="bg-white text-black text-xs font-medium px-5 py-2 tracking-widest uppercase hover:bg-neutral-200 transition-colors disabled:opacity-50"
-            >
-              {saving ? 'Saving…' : 'Save'}
-            </button>
-          </div>
-        </div>
+      <AdminSaveBar title="Photography" status={status} saving={saving} dirty={dirty} onSave={handleSave} />
+      <main className="w-full max-w-3xl mx-auto px-4 py-8 sm:px-6 sm:py-10">
 
         {/* Filter label editor */}
         <div className="mb-10">
