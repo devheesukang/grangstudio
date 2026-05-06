@@ -110,6 +110,16 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+button:not(:disabled),
+[role="button"]:not(:disabled) {
+  cursor: pointer;
+}
+
+button:disabled,
+[role="button"][aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
 /* Admin-only theme. This intentionally does not use the public next-themes state. */
 .admin-shell[data-admin-theme="light"] {
   color-scheme: light;

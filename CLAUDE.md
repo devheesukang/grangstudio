@@ -1205,9 +1205,9 @@ The admin theme toggle appears in the sidebar/drawer action area directly above 
 
 The existing admin UI uses neutral dark utility classes. Admin-scoped CSS overrides under `.admin-shell[data-admin-theme="light"]` provide a light admin surface without affecting the public portfolio.
 
-**4. View Site external navigation**
+**4. View Site tab navigation**
 
-The View Site action uses a plain anchor with `target="_blank"` and `rel="noopener noreferrer"` so it reliably opens the public portfolio in a new tab.
+The View Site action opens the public portfolio with `window.open('/', '_blank')` from the click handler and no window feature string. This requests a new browser tab; final tab/window placement is still controlled by the user's browser settings.
 
 ---
 
@@ -1226,7 +1226,138 @@ The View Site action uses a plain anchor with `target="_blank"` and `rel="noopen
 - [x] Keep public site theme state and styling untouched
 
 **View Site navigation:**
-- [x] Change View Site to a plain external-tab anchor
+- [x] Change View Site to a click handler that requests a new tab without popup window features
+
+**Verification:**
+- [x] Run production build check (`npm run build`)
+- [x] Run lint check (`npm run lint`)
+- [x] Verify View Site opens `/` as a second browser page from a fresh production server
+
+---
+
+### Phase 16 — Admin Video YouTube URL Editing
+> Goal: let admins paste normal YouTube links instead of raw YouTube IDs when adding or editing videos.
+
+#### Summary of changes
+
+**1. URL-first video form**
+
+The admin video form now labels the single video field as `YouTube URL` and accepts normal YouTube watch, short, live, embed, and playlist URLs.
+
+**2. Multiple URL input**
+
+The multiple-video field is now a textarea that accepts YouTube URLs separated by commas or new lines.
+
+**3. Backward-compatible storage**
+
+Existing saved IDs are displayed back to the admin as normal YouTube URLs. On save, URLs are parsed back into the existing `youtubeId`, `youtubeIds`, or `playlistId` fields so the public embed code does not need to change.
+
+---
+
+#### Checklist
+
+**Admin video form:**
+- [x] Replace raw `YouTube ID` label/placeholder with normal YouTube URL wording
+- [x] Convert the multiple ID input into a URL textarea
+- [x] Display existing IDs/playlists as regular YouTube URLs while editing
+
+**URL parsing:**
+- [x] Parse `youtube.com/watch?v=...`
+- [x] Parse `youtu.be/...`
+- [x] Parse `youtube.com/shorts/...`, `/live/...`, and `/embed/...`
+- [x] Parse playlist URLs through the `list` query parameter
+- [x] Preserve the existing embed data shape on save
+
+**Verification:**
+- [x] Run production build check (`npm run build`)
+- [x] Run lint check (`npm run lint`)
+
+---
+
+### Phase 17 — Admin Photography Image Deletion + Custom Categories
+> Goal: make photography admin tabs behave like editable categories, and let admins remove images from categories.
+
+#### Summary of changes
+
+**1. Image deletion**
+
+Each photography image row now has a `Del` action. Deleting removes the image from that category after confirmation.
+
+**2. New tab creates category**
+
+Adding a filter tab now also creates an empty project/category block with the same key. The admin can upload images into it, toggle visibility, reorder images, and save it with the rest of the photography config.
+
+**3. Custom category rendering**
+
+Admin-created categories are no longer ignored by the public site. The public photography section now falls back to admin `title` and `filterGroup` metadata when a project is not present in the static `portfolio.ts` defaults.
+
+**4. Safe custom tab deletion**
+
+Deleting a custom tab removes its custom category too. If that custom category already has images, the admin gets a confirmation prompt before the category is removed. Built-in portfolio categories are not deleted when their tab label is removed.
+
+---
+
+#### Checklist
+
+**Image deletion:**
+- [x] Add `Del` action to each photography image row
+- [x] Remove deleted image entries from the selected category
+- [x] Confirm before deleting an image
+
+**Custom categories:**
+- [x] Extend admin project config with optional `title` and `filterGroup`
+- [x] Add default title/filterGroup metadata for built-in projects
+- [x] Create an empty editable category when adding a new filter tab
+- [x] Keep label edits in sync with matching custom category titles
+
+**Public rendering:**
+- [x] Render admin-created categories without requiring a matching static `portfolio.ts` project
+- [x] Use admin metadata as fallback title/filter group for custom categories
+
+**Verification:**
+- [x] Run production build check (`npm run build`)
+- [x] Run lint check (`npm run lint`)
+
+---
+
+### Phase 18 — Admin Design Variant Verification
+> Goal: verify that changing the design variant in admin actually affects the public portfolio.
+
+#### Verification
+
+- [x] Authenticate against the local admin API
+- [x] Read the original `activeVariant`
+- [x] Save a temporary variant through `POST /api/admin/content`
+- [x] Fetch `/` and confirm the root `<html>` renders the temporary `data-design` value
+- [x] Restore the original variant through `POST /api/admin/content`
+- [x] Fetch `/` again and confirm the original `data-design` value is restored
+
+---
+
+### Phase 19 — Admin Button Cursor + Light Theme Contrast
+> Goal: polish admin interaction affordances and fix selected design variant text contrast in light mode.
+
+#### Summary of changes
+
+**1. Button cursor affordance**
+
+Enabled `<button>` elements and enabled `[role="button"]` controls should show `cursor: pointer`. Disabled controls should show `cursor: not-allowed`.
+
+**2. Design variant active-card contrast**
+
+The selected design variant card uses a dark active background in both admin themes. In light admin mode, the global `.text-white` override made the selected variant title unreadable. The design variant card now sets explicit active title/subtitle colors so selected text stays visible.
+
+---
+
+#### Checklist
+
+**Cursor affordance:**
+- [x] Add global pointer cursor for enabled buttons
+- [x] Add disabled cursor for disabled buttons
+
+**Light theme contrast:**
+- [x] Set explicit active title color for selected design variant
+- [x] Set explicit active subtitle color for selected design variant
 
 **Verification:**
 - [x] Run production build check (`npm run build`)

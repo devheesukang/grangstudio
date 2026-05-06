@@ -20,6 +20,12 @@ function NavLinks({ pathname, onNav }: { pathname: string; onNav?: () => void })
     router.push('/')
   }
 
+  function handleViewSite() {
+    const siteTab = window.open('/', '_blank')
+    if (siteTab) siteTab.opener = null
+    onNav?.()
+  }
+
   return (
     <div className="flex flex-col h-full">
       <Link
@@ -54,15 +60,13 @@ function NavLinks({ pathname, onNav }: { pathname: string; onNav?: () => void })
         <div className="px-3 py-2">
           <AdminThemeToggle />
         </div>
-        <a
-          href="/"
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={onNav}
-          className="px-3 py-2 text-xs tracking-widest uppercase text-neutral-500 hover:text-white transition-colors"
+        <button
+          type="button"
+          onClick={handleViewSite}
+          className="px-3 py-2 text-left text-xs tracking-widest uppercase text-neutral-500 hover:text-white transition-colors"
         >
           View Site ↗
-        </a>
+        </button>
         <button
           onClick={handleLogout}
           className="px-3 py-2 text-xs tracking-widest uppercase text-neutral-500 hover:text-white transition-colors text-left"

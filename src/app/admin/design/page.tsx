@@ -97,8 +97,18 @@ export default function DesignAdminPage() {
                 />
 
                 <div className="flex-1 min-w-0">
-                  <p className="text-sm text-white tracking-wide">{v.name}</p>
-                  <p className="text-xs text-neutral-500 mt-0.5">{v.font} — {v.accent}</p>
+                  <p
+                    className="text-sm tracking-wide"
+                    style={{ color: active ? '#ffffff' : undefined }}
+                  >
+                    {v.name}
+                  </p>
+                  <p
+                    className="text-xs mt-0.5"
+                    style={{ color: active ? '#a3a3a3' : undefined }}
+                  >
+                    {v.font} — {v.accent}
+                  </p>
                 </div>
 
                 <span
