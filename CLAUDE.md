@@ -423,19 +423,44 @@ The v2 Notion export introduces a major reorganization: many old sub-categories 
 
 ---
 
-#### A. Photography — retired categories (folders removed, images redistributed)
+#### A. Photography — files deleted from the site (not present in v2 source)
 
-The following `public/images/` sub-folders will be **deleted** after their images are migrated:
+These files are **removed from `public/images/`** and from `portfolio.ts`. They exist in `notion_export/bosun_portfolio/non_folderized/` but were dropped from the v2 Notion export.
+
+| File deleted from `public/images/` | Korean source (v1) | Reason |
+|---|---|---|
+| `glasses/glasses-1.jpg` | `안경.jpg` | Eyewear category removed from v2 entirely |
+| `glasses/glasses-2.jpg` | `안경2.jpg` | Eyewear category removed from v2 entirely |
+| `glasses/sunglasses.jpg` | `선글라스.jpg` | Eyewear category removed from v2 entirely |
+| `watch/watch-prx.jpg` | `prx_복사본.jpg` | PRX model dropped from still life in v2 |
+| `airbnb/bedroom-2.jpeg` | `침실3_크게.jpeg` | Only 1 bedroom survives in merged interior |
+| `airbnb/bedroom-3.jpeg` | `침실8_크게.jpeg` | Only 1 bedroom survives in merged interior |
+| `airbnb/bedroom-4.jpeg` | `침실14_크게.jpeg` | Only 1 bedroom survives in merged interior |
+| `glass/glass-still.jpg` | unknown | Not referenced in v2 Notion categories |
+| `glass/perfume-1.png` | `향수1.png` | Moved to Cosmetics in v2 (Phase 8 handles the re-copy) |
+| `cosmetics/` — 3 files TBD | `tjstmxlr.jpg`, `선크림.jpg`, `오브제파데3.jpg` | Replaced by updated versions in v2; exact English filename mapping to be confirmed during Phase 8 execution |
+
+**`portfolio.ts` entries affected (image files stay on disk — only removed from arrays/projects):**
+- `glasses` project: **removed entirely** from `projects` array (files stay in `public/images/glasses/`)
+- `watch` project: remove `'/images/watch/watch-prx.jpg'` from images array (file stays on disk)
+- `airbnb` project: remove `bedroom-2.jpeg`, `bedroom-3.jpeg`, `bedroom-4.jpeg` from images array (files stay on disk)
+- `glass` project: remove `'/images/glass/glass-still.jpg'` from images array (file stays on disk; perfume-1.png stays referenced until Phase 8 full migration)
+
+---
+
+#### B. Photography — retired category folders (removed after images migrated to new structure)
+
+The following `public/images/` sub-folders will be **fully deleted** once Phase 8 completes:
 
 | Old folder | Images | Destination |
 |---|---|---|
-| `watch/` | watch-1.png, watch-2.jpg, watch-3.png, watch-4.jpg, watch-prx.jpg | → `still-life/` (4 of 5 appear in v2; watch-prx.jpg not in v2 — omit) |
-| `glass/` | glass-bottle.jpg, glass-still.jpg, perfume-1.png | → glass-bottle.jpg → `food/`; glass-still.jpg & perfume-1.png not in v2 — omit |
-| `glasses/` | glasses-1.jpg, glasses-2.jpg, sunglasses.jpg | → omitted entirely — not in v2 |
+| `watch/` | watch-1.png, watch-2.jpg, watch-3.png, watch-4.jpg | → `still-life/` |
+| `glass/` | glass-bottle.jpg, perfume-1.png | → `food/` and `cosmetics/` respectively |
+| `glasses/` | *(all 3 deleted — see section A)* | removed |
 | `vase/` | vase-1.jpeg, vase-2.jpeg | → `still-life/` |
 | `light-painting/` | light-painting-1..5.jpeg | → `still-life/` |
 | `assignment/` | assignment-1..4.jpeg | → `still-life/` (개인작업 images) |
-| `airbnb/` | bedroom-1..4.jpeg, kitchen.jpeg | → `interior/` (only kitchen + bedroom-1 survive; bedroom-2..4 omitted — not in v2) |
+| `airbnb/` | bedroom-1.jpeg, kitchen.jpeg | → `interior/` (bedroom-2..4 deleted) |
 | `rise-interior/` | front-desk.jpeg, hallway.jpeg, library.jpeg, library-3.jpeg, restroom.jpeg | → `interior/` (all 5 survive) |
 
 ---
@@ -620,21 +645,41 @@ The `FILTER_GROUPS` array in `Photography.tsx` currently includes tabs: `all | p
 
 #### Checklist
 
-- [ ] Copy new images to `public/images/still-life/` (15 files)
-- [ ] Copy new images to `public/images/food/` (3 files)
-- [ ] Copy new images to `public/images/interior/` (7 files)
-- [ ] Add 2 new images to `public/images/cosmetics/`
-- [ ] Add 2 new images to `public/images/portrait/`
-- [ ] Update `Category` and `VideoProject` types in `portfolio.ts`
-- [ ] Remove retired project entries from `portfolio.ts`
-- [ ] Add `still-life`, `food`, `interior` project entries to `portfolio.ts`
-- [ ] Update `cosmetics` and `portrait` image arrays in `portfolio.ts`
-- [ ] Update all video entries with new/multiple YouTube IDs in `portfolio.ts`
-- [ ] Add new AI 2D video entry to `portfolio.ts`
-- [ ] Update Video section UI to handle `youtubeIds` array
-- [ ] Delete retired `public/images/` folders: watch, glass, glasses, vase, light-painting, assignment, airbnb, rise-interior
-- [ ] Update CLAUDE.md content tables
-- [ ] Commit: `content: notion v2 — restructure categories and update video data`
+**Image files (copy from `notion_export/portfolio_v2/notion1/only_pics/` — files stay on disk, never deleted):**
+- [ ] Copy 15 new images to `public/images/still-life/`
+- [ ] Copy 3 new images to `public/images/food/`
+- [ ] Copy 7 new images to `public/images/interior/`
+- [ ] Copy 2 new images to `public/images/cosmetics/` (화장품.jpg → cosmetics-full.jpg, 향수1.png → perfume.png)
+- [ ] Copy 2 new images to `public/images/portrait/` (IMG_4212_복사2.jpg → portrait-4.jpg, IMG_5732_복사.jpg → portrait-5.jpg)
+- [ ] Commit: `content: notion v2 — copy new images`
+
+**`src/lib/portfolio.ts` — deletions from arrays (files stay on disk):**
+- [ ] Remove `glasses` project entry entirely from `projects` array
+- [ ] Remove `'/images/watch/watch-prx.jpg'` from `watch` project images array
+- [ ] Remove `'/images/airbnb/bedroom-2.jpeg'`, `bedroom-3.jpeg`, `bedroom-4.jpeg` from `airbnb` project images array
+- [ ] Remove `'/images/glass/glass-still.jpg'` from `glass` project images array
+- [ ] Identify and remove the 3 deprecated cosmetics files (tjstmxlr.jpg, 선크림.jpg, 오브제파데3.jpg mappings) from `cosmetics` images array
+
+**`src/lib/portfolio.ts` — type and project additions:**
+- [ ] Update `Category` type: add `'still-life' | 'food' | 'interior'`
+- [ ] Add `youtubeIds?: string[]` to `VideoProject` type
+- [ ] Add `still-life` project entry
+- [ ] Add `food` project entry
+- [ ] Add `interior` project entry (replaces retired `airbnb` and `rise-interior` entries)
+- [ ] Update `cosmetics` images array with 2 new images
+- [ ] Update `portrait` images array with 2 new images
+- [ ] Update video entries with new/multiple YouTube IDs
+- [ ] Add new `ai-2d-video` entry to `videos` array
+- [ ] Commit: `content: notion v2 — restructure portfolio.ts categories and videos`
+
+**UI:**
+- [ ] Update Video section component to handle `youtubeIds` array (multi-video display)
+- [ ] Commit: `feat: video section — support multi-video projects`
+
+**Cleanup (old folder entries retired from `portfolio.ts` — files remain on disk):**
+- [ ] Remove `watch`, `glass`, `glasses`, `vase`, `light-painting`, `assignment`, `airbnb`, `rise-interior` project entries once their content is fully migrated into new entries
+- [ ] Update CLAUDE.md content tables to reflect new category structure
+- [ ] Commit: `content: notion v2 — update CLAUDE.md content tables`
 
 ---
 
