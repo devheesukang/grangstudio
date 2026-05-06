@@ -10,6 +10,8 @@ export interface ImageEntry {
 
 export interface ProjectConfig {
   id: string
+  title?: string
+  filterGroup?: string
   visible: boolean
   images: ImageEntry[]
 }
@@ -49,6 +51,8 @@ export function buildDefaultConfig(): ContentConfig {
       filterOrder: ['all', 'cosmetics', 'product', 'portrait', 'fine-art', 'ai', 'interior'],
       projects: projects.map((p) => ({
         id: p.id,
+        title: p.title,
+        filterGroup: p.filterGroup,
         visible: true,
         images: p.images.map((src) => ({ src, visible: true })),
       })),

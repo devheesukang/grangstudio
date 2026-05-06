@@ -17,16 +17,21 @@ import {
   arrayMove,
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import { projects as defaultProjects } from '@/lib/portfolio'
 import type { ContentConfig, ProjectConfig, ImageEntry } from '@/lib/adminContent'
+
+const DEFAULT_PROJECT_IDS = new Set(defaultProjects.map((project) => project.id))
 
 // ─── Sortable image tile ───────────────────────────────────────────────────
 
 function SortableImage({
   entry,
   onToggle,
+  onDelete,
 }: {
   entry: ImageEntry
   onToggle: () => void
+  onDelete: () => void
 }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
     useSortable({ id: entry.src })
@@ -72,6 +77,14 @@ function SortableImage({
       >
         {entry.visible ? 'On' : 'Off'}
       </button>
+
+      <button
+        onClick={onDelete}
+        className="shrink-0 text-xs tracking-widest uppercase text-red-500 hover:text-red-400 transition-colors"
+        aria-label="Delete image"
+      >
+        Del
+      </button>
     </div>
   )
 }
@@ -82,12 +95,14 @@ function CategoryBlock({
   project,
   onToggleCategory,
   onToggleImage,
+  onDeleteImage,
   onReorderImages,
   onUpload,
 }: {
   project: ProjectConfig
   onToggleCategory: () => void
   onToggleImage: (src: string) => void
+  onDeleteImage: (src: string) => void
   onReorderImages: (images: ImageEntry[]) => void
   onUpload: (projectId: string, file: File) => Promise<void>
 }) {
@@ -118,7 +133,7 @@ function CategoryBlock({
       {/* Category header */}
       <div className="flex flex-col gap-3 px-4 py-3 border-b border-neutral-800 bg-neutral-900 sm:flex-row sm:items-center sm:justify-between">
         <span className="min-w-0 break-words text-xs tracking-widest uppercase text-white">
-          {project.id} <span className="text-neutral-500">({project.images.length})</span>
+          {project.title ?? project.id} <span className="text-neutral-500">({project.images.length})</span>
         </span>
         <div className="flex flex-wrap items-center gap-4">
           <input
@@ -157,10 +172,16 @@ function CategoryBlock({
                 key={entry.src}
                 entry={entry}
                 onToggle={() => onToggleImage(entry.src)}
+                onDelete={() => onDeleteImage(entry.src)}
               />
             ))}
           </SortableContext>
         </DndContext>
+        {!project.images.length && (
+          <p className="px-1 py-5 text-center text-xs tracking-widest uppercase text-neutral-600">
+            No images yet
+          </p>
+        )}
       </div>
     </div>
   )
@@ -212,6 +233,18 @@ export default function PhotographyAdminPage() {
     }))
   }
 
+  function deleteImage(projectId: string, src: string) {
+    if (!confirm('Delete this image from the category?')) return
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      projects: photo.projects.map((p) =>
+        p.id === projectId
+          ? { ...p, images: p.images.filter((img) => img.src !== src) }
+          : p
+      ),
+    }))
+  }
+
   function reorderImages(projectId: string, images: ImageEntry[]) {
     updatePhotoConfig((photo) => ({
       ...photo,
@@ -244,17 +277,31 @@ export default function PhotographyAdminPage() {
     updatePhotoConfig((photo) => ({
       ...photo,
       filterLabels: { ...photo.filterLabels, [key]: value },
+      projects: photo.projects.map((project) =>
+        project.id === key ? { ...project, title: value } : project
+      ),
     }))
   }
 
   function deleteFilterTab(key: string) {
     updatePhotoConfig((photo) => {
+      const customProject = photo.projects.find((project) => (
+        project.id === key && !DEFAULT_PROJECT_IDS.has(project.id)
+      ))
+      if (customProject?.images.length) {
+        const confirmed = confirm('Delete this tab and its custom image category?')
+        if (!confirmed) return photo
+      }
+
       const rest = { ...photo.filterLabels }
       delete rest[key]
       return {
         ...photo,
         filterLabels: rest,
         filterOrder: photo.filterOrder.filter((k) => k !== key),
+        projects: photo.projects.filter((project) => (
+          DEFAULT_PROJECT_IDS.has(project.id) || project.id !== key
+        )),
       }
     })
   }
@@ -264,6 +311,18 @@ export default function PhotographyAdminPage() {
       ...photo,
       filterLabels: { ...photo.filterLabels, [key]: label },
       filterOrder: [...photo.filterOrder, key],
+      projects: photo.projects.some((project) => project.id === key)
+        ? photo.projects
+        : [
+            ...photo.projects,
+            {
+              id: key,
+              title: label,
+              filterGroup: key,
+              visible: true,
+              images: [],
+            },
+          ],
     }))
   }
 
@@ -392,6 +451,7 @@ export default function PhotographyAdminPage() {
               project={project}
               onToggleCategory={() => toggleCategory(project.id)}
               onToggleImage={(src) => toggleImage(project.id, src)}
+              onDeleteImage={(src) => deleteImage(project.id, src)}
               onReorderImages={(images) => reorderImages(project.id, images)}
               onUpload={handleUpload}
             />

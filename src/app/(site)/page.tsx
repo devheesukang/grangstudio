@@ -5,7 +5,6 @@ import { Design } from '@/components/sections/Design'
 import { Info } from '@/components/sections/Info'
 import { getEffectiveConfig } from '@/lib/adminContent'
 import { projects as defaultProjects } from '@/lib/portfolio'
-import type { FilterGroup } from '@/lib/portfolio'
 
 export const revalidate = 0
 
@@ -16,10 +15,14 @@ export default async function Home() {
     .filter((pc) => pc.visible)
     .flatMap((pc) => {
       const base = defaultProjects.find((p) => p.id === pc.id)
-      if (!base) return []
       const visibleImages = pc.images.filter((img) => img.visible).map((img) => img.src)
       if (!visibleImages.length) return []
-      return [{ id: pc.id, title: base.title, filterGroup: base.filterGroup, images: visibleImages }]
+      return [{
+        id: pc.id,
+        title: pc.title ?? base?.title ?? config.photography.filterLabels[pc.id] ?? pc.id,
+        filterGroup: pc.filterGroup ?? base?.filterGroup ?? pc.id,
+        images: visibleImages,
+      }]
     })
 
   const visibleVideos = config.videos.filter((v) => v.visible)
@@ -30,7 +33,7 @@ export default async function Home() {
       <Photography
         projects={photoProjects}
         filterLabels={config.photography.filterLabels}
-        filterOrder={config.photography.filterOrder as FilterGroup[]}
+        filterOrder={config.photography.filterOrder}
       />
       <Video videos={visibleVideos} />
       <Design />
