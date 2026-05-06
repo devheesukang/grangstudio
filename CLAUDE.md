@@ -867,8 +867,10 @@ Public site (gallery, video, info sections)
 **Setup:**
 - [ ] Add Vercel Blob store via `vercel env` / Vercel dashboard — get `BLOB_READ_WRITE_TOKEN`
 - [ ] Add `ADMIN_PASSWORD` and `ADMIN_JWT_SECRET` to Vercel env vars (all environments)
-- [ ] Install dependencies: `@vercel/blob`, `@dnd-kit/core`, `@dnd-kit/sortable`, `jose`
-- [ ] Commit: `chore: add admin dependencies`
+- [x] Install dependencies: `@vercel/blob`, `@dnd-kit/core`, `@dnd-kit/sortable`, `jose`
+- [x] Create `.env.local` with `ADMIN_PASSWORD=1234` (local dev only), `ADMIN_JWT_SECRET`, placeholder `BLOB_READ_WRITE_TOKEN`
+- [x] Confirm `.env*` is in `.gitignore` (already present)
+- [x] Commit: `chore: add admin dependencies`
 
 **Auth:**
 - [ ] Create `src/middleware.ts`: protect `/admin/dashboard`, `/admin/photography`, `/admin/videos`, `/admin/info` — redirect to `/admin` if session cookie missing or invalid
