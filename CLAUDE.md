@@ -119,7 +119,7 @@ Note: The Notion top-level section was renamed from "Work" → "Photography" in 
 
 | Category | Key | Image Count | Description |
 |---|---|---|---|
-| Cosmetics | `cosmetics` | 11 | Beauty/skincare product photography |
+| Cosmetics | `cosmetics` | 14 | Beauty/skincare product photography |
 | Still Life | `still-life` | 15 | Watches, light painting, personal work, vases |
 | Food | `food` | 3 | Food & beverage still life |
 | Portrait | `portrait` | 8 | Portrait subjects, large + web-res |
@@ -685,6 +685,33 @@ The `FILTER_GROUPS` array in `Photography.tsx` currently includes tabs: `all | p
 - [x] Remove `watch`, `glass`, `glasses`, `vase`, `light-painting`, `assignment`, `airbnb`, `rise-interior` project entries once their content is fully migrated into new entries
 - [x] Update CLAUDE.md content tables to reflect new category structure
 - [x] Commit: `content: notion v2 — update CLAUDE.md content tables`
+
+---
+
+### Phase 9 — Missing Cosmetics Images + Duplicate Fix [x]
+> Discovered via size-based audit comparing Notion v2 source against `public/images/`.
+
+**Root causes found:**
+- 4 cosmetics images in Notion v2 were never copied to `public/images/cosmetics/` during Phase 8
+- `cosmetics-set.jpg` (v1 name) and `cosmetics-full.jpg` (Phase 8 addition) were identical files — same source `화장품.jpg`; duplicate removed from `portfolio.ts`
+
+**Files added to `public/images/cosmetics/`:**
+
+| Source (Notion v2) | Destination | Description |
+|---|---|---|
+| `세럼_복사2.jpg` | `serum.jpg` | Serum product |
+| `비비_복사.jpg` | `bb-cream.jpg` | BB cream product |
+| `Capture_One_Catalog01372_복사본_크게.jpeg` | `cosmetics-group.jpeg` | Group cosmetics shot |
+| `풀리_썬크림_복사_복사.jpg` | `sunscreen-tube.jpg` | Tube sunscreen |
+
+**`portfolio.ts` changes:**
+- Removed `cosmetics-set.jpg` (duplicate of `cosmetics-full.jpg`)
+- Added 4 new images: `serum.jpg`, `cosmetics-group.jpeg`, `sunscreen-tube.jpg`, `bb-cream.jpg`
+- Reordered cosmetics array to match Notion v2 display order (14 images total)
+
+- [x] Copy 4 missing cosmetics images to `public/images/cosmetics/`
+- [x] Remove duplicate `cosmetics-set.jpg` from `portfolio.ts`, add 4 new images in Notion order
+- [x] Commit: `content: add 4 missing cosmetics images, fix duplicate`
 
 ---
 
