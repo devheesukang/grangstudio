@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from 'react'
 import { ThemeToggle } from './ThemeToggle'
-import { VariantSwitcher } from './VariantSwitcher'
 
 const NAV_LINKS = [
   { label: 'Photography', href: '#photography' },
@@ -98,8 +97,6 @@ export function Nav() {
 
           {/* Controls */}
           <div className="flex items-center gap-3">
-            <VariantSwitcher />
-            <div className="w-px h-3 bg-current opacity-20" />
             <ThemeToggle />
 
             {/* Hamburger (mobile) */}

@@ -1,14 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { verifyAdminSession } from '@/lib/adminAuth'
-import { buildDefaultConfig, readContentConfig, writeContentConfig } from '@/lib/adminContent'
+import { getEffectiveConfig, writeContentConfig } from '@/lib/adminContent'
 
 export async function GET(request: NextRequest) {
   if (!(await verifyAdminSession(request))) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const saved = await readContentConfig()
-  const config = saved ?? buildDefaultConfig()
+  const config = await getEffectiveConfig()
   return NextResponse.json(config)
 }
 

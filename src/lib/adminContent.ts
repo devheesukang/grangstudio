@@ -1,4 +1,7 @@
+import { cache } from 'react'
 import { projects, videos, FILTER_LABELS } from './portfolio'
+
+export type Variant = 'v1' | 'v2' | 'v3'
 
 export interface ImageEntry {
   src: string
@@ -23,6 +26,7 @@ export interface VideoConfig {
 }
 
 export interface ContentConfig {
+  activeVariant: Variant
   photography: {
     filterLabels: Record<string, string>
     filterOrder: string[]
@@ -39,6 +43,7 @@ export interface ContentConfig {
 
 export function buildDefaultConfig(): ContentConfig {
   return {
+    activeVariant: 'v1',
     photography: {
       filterLabels: { ...FILTER_LABELS },
       filterOrder: ['all', 'cosmetics', 'product', 'portrait', 'fine-art', 'ai', 'interior'],
@@ -69,8 +74,7 @@ export function buildDefaultConfig(): ContentConfig {
 
 const BLOB_KEY = 'content.json'
 
-// Returns null when BLOB_READ_WRITE_TOKEN is not set (local dev without Blob)
-export async function readContentConfig(): Promise<ContentConfig | null> {
+async function _readContentConfig(): Promise<ContentConfig | null> {
   if (!process.env.BLOB_READ_WRITE_TOKEN) return null
   try {
     const { list } = await import('@vercel/blob')
@@ -94,8 +98,8 @@ export async function writeContentConfig(config: ContentConfig): Promise<void> {
   })
 }
 
-// Returns merged config: Blob config if available, otherwise built-in defaults
-export async function getEffectiveConfig(): Promise<ContentConfig> {
-  const saved = await readContentConfig()
+// Cached per request — multiple Server Components calling this in the same render get one Blob fetch
+export const getEffectiveConfig = cache(async (): Promise<ContentConfig> => {
+  const saved = await _readContentConfig()
   return saved ?? buildDefaultConfig()
-}
+})

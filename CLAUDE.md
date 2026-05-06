@@ -998,23 +998,22 @@ New behaviour in `/admin/photography` filter label section:
 #### Checklist
 
 **Layout isolation (route groups):**
-- [ ] Create `src/app/(site)/` directory
-- [ ] Move `src/app/layout.tsx` portfolio content (ThemeProvider, DesignVariantProvider, Nav, Footer) to `src/app/(site)/layout.tsx` — keep font definitions in root layout
-- [ ] Move `src/app/page.tsx` to `src/app/(site)/page.tsx`
-- [ ] Strip `src/app/layout.tsx` to bare minimum: `<html>`, `<body>`, font class variables, `globals.css` import, `{children}` only
-- [ ] Fix `src/app/admin/layout.tsx`: remove `<html>` and `<body>` tags, return a plain `<div className="min-h-screen bg-neutral-950 antialiased">{children}</div>`
-- [ ] Verify portfolio site renders identically at `/`
-- [ ] Verify admin pages no longer show portfolio Nav/Footer
-- [ ] Commit: `refactor: route groups — isolate portfolio layout from admin`
+- [x] Create `src/app/(site)/` directory
+- [x] Move portfolio layout (ThemeProvider, Nav, Footer) to `src/app/(site)/layout.tsx`
+- [x] Move `src/app/page.tsx` to `src/app/(site)/page.tsx`
+- [x] Strip `src/app/layout.tsx` to bare minimum: fonts, `globals.css`, `data-design` from Blob, `{children}` only — no Nav/Footer
+- [x] Fix `src/app/admin/layout.tsx`: remove `<html>` and `<body>` tags, return plain wrapper div
+- [x] Root layout is now async — calls `getEffectiveConfig()` (React.cache, one Blob fetch per request) to set `data-design` attribute
+- [x] Commit: `refactor: route groups — isolate portfolio layout from admin`
 
 **Variant switcher removal + server-side variant:**
-- [ ] Remove `<VariantSwitcher />` from `src/components/layout/Nav.tsx`
-- [ ] Remove `DesignVariantProvider` import and usage from `(site)/layout.tsx`
-- [ ] Remove `src/lib/design-variant.ts` (or keep file but strip the provider if other code depends on the type)
-- [ ] Add `activeVariant?: 'v1' | 'v2' | 'v3'` to `ContentConfig` type in `src/lib/adminContent.ts`
-- [ ] Update `buildDefaultConfig()` to include `activeVariant: 'v1'`
-- [ ] In `(site)/layout.tsx`: read `activeVariant` from `getEffectiveConfig()`, pass it to a thin `<DesignVariantApplier variant={activeVariant} />` client component that sets `document.documentElement.dataset.design` on mount (no flash since default matches server render)
-- [ ] Commit: `feat: remove public variant switcher — variant controlled by admin`
+- [x] Remove `<VariantSwitcher />` import and JSX from `src/components/layout/Nav.tsx`
+- [x] Remove `DesignVariantProvider` from root layout (no longer needed)
+- [x] Add `activeVariant: Variant` to `ContentConfig` type in `src/lib/adminContent.ts`
+- [x] Update `buildDefaultConfig()` to include `activeVariant: 'v1'`
+- [x] Wrap `getEffectiveConfig` with `React.cache` to deduplicate Blob fetches within one request
+- [x] Update `src/app/api/admin/content/route.ts` to use `getEffectiveConfig` (removed now-private `readContentConfig` export)
+- [x] Commit: `feat: remove public variant switcher — variant controlled by admin`
 
 **Admin design page:**
 - [ ] Add `activeVariant` to `AdminNav` link list: `/admin/design`
