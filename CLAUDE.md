@@ -654,30 +654,30 @@ The `FILTER_GROUPS` array in `Photography.tsx` currently includes tabs: `all | p
 - [x] Commit: `content: notion v2 — copy new images`
 
 **`src/lib/portfolio.ts` — deletions from arrays (files stay on disk):**
-- [ ] Remove `glasses` project entry entirely from `projects` array
-- [ ] Remove `'/images/watch/watch-prx.jpg'` from `watch` project images array
-- [ ] Remove `'/images/airbnb/bedroom-2.jpeg'`, `bedroom-3.jpeg`, `bedroom-4.jpeg` from `airbnb` project images array
-- [ ] Remove `'/images/glass/glass-still.jpg'` from `glass` project images array
-- [ ] Identify and remove the 3 deprecated cosmetics files (tjstmxlr.jpg, 선크림.jpg, 오브제파데3.jpg mappings) from `cosmetics` images array
+- [x] Remove `glasses` project entry entirely from `projects` array
+- [x] Remove `'/images/watch/watch-prx.jpg'` from `watch` project images array
+- [x] Remove `'/images/airbnb/bedroom-2.jpeg'`, `bedroom-3.jpeg`, `bedroom-4.jpeg` from `airbnb` project images array
+- [x] Remove `'/images/glass/glass-still.jpg'` from `glass` project images array
+- [x] Identify and remove the 3 deprecated cosmetics files (tjstmxlr.jpg → cosmetic-3.jpg, 선크림.jpg → sunscreen-1.jpg, 오브제파데3.jpg → foundation-2.jpg) from `cosmetics` images array
 
 **`src/lib/portfolio.ts` — type and project additions:**
-- [ ] Update `Category` type: add `'still-life' | 'food' | 'interior'`
-- [ ] Add `youtubeIds?: string[]` to `VideoProject` type
-- [ ] Add `still-life` project entry
-- [ ] Add `food` project entry
-- [ ] Add `interior` project entry (replaces retired `airbnb` and `rise-interior` entries)
-- [ ] Update `cosmetics` images array with 2 new images
-- [ ] Update `portrait` images array with 2 new images
-- [ ] Update video entries with new/multiple YouTube IDs
-- [ ] Add new `ai-2d-video` entry to `videos` array
-- [ ] Commit: `content: notion v2 — restructure portfolio.ts categories and videos`
+- [x] Update `Category` type: add `'still-life' | 'food' | 'interior'`
+- [x] Add `youtubeIds?: string[]` to `VideoProject` type
+- [x] Add `still-life` project entry
+- [x] Add `food` project entry
+- [x] Add `interior` project entry (replaces retired `airbnb` and `rise-interior` entries)
+- [x] Update `cosmetics` images array with 2 new images
+- [x] Update `portrait` images array with 2 new images
+- [x] Update video entries with new/multiple YouTube IDs
+- [x] Add new `ai-2d-video` entry to `videos` array
+- [x] Commit: `content: notion v2 — restructure portfolio.ts categories and videos`
 
 **UI:**
-- [ ] Update Video section component to handle `youtubeIds` array (multi-video display)
-- [ ] Commit: `feat: video section — support multi-video projects`
+- [x] Update Video section component to handle `youtubeIds` array (multi-video display)
+- [x] Commit: `feat: video section — support multi-video projects`
 
 **Cleanup (old folder entries retired from `portfolio.ts` — files remain on disk):**
-- [ ] Remove `watch`, `glass`, `glasses`, `vase`, `light-painting`, `assignment`, `airbnb`, `rise-interior` project entries once their content is fully migrated into new entries
+- [x] Remove `watch`, `glass`, `glasses`, `vase`, `light-painting`, `assignment`, `airbnb`, `rise-interior` project entries once their content is fully migrated into new entries
 - [ ] Update CLAUDE.md content tables to reflect new category structure
 - [ ] Commit: `content: notion v2 — update CLAUDE.md content tables`
 

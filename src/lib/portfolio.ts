@@ -1,16 +1,11 @@
 export type Category =
   | 'cosmetics'
-  | 'watch'
-  | 'glass'
-  | 'glasses'
-  | 'vase'
+  | 'still-life'
+  | 'food'
   | 'portrait'
-  | 'light-painting'
   | 'ai-work'
   | 'fine-art'
-  | 'assignment'
-  | 'airbnb'
-  | 'rise-interior'
+  | 'interior'
   | 'rise-website'
 
 export type FilterGroup = 'all' | 'product' | 'portrait' | 'fine-art' | 'ai' | 'interior'
@@ -30,6 +25,7 @@ export interface VideoProject {
   titleKo: string
   year?: string
   youtubeId?: string
+  youtubeIds?: string[]
   playlistId?: string
   thumbnail?: string
 }
@@ -58,63 +54,50 @@ export const projects: Project[] = [
     featured: true,
     images: [
       '/images/cosmetics/foundation-1.jpg',
-      '/images/cosmetics/foundation-2.jpg',
       '/images/cosmetics/object-2.jpg',
       '/images/cosmetics/object-3.jpg',
       '/images/cosmetics/cosmetic-1.jpg',
       '/images/cosmetics/cosmetic-2.jpg',
-      '/images/cosmetics/cosmetic-3.jpg',
       '/images/cosmetics/tube.jpg',
-      '/images/cosmetics/sunscreen-1.jpg',
       '/images/cosmetics/sunscreen-2.jpg',
       '/images/cosmetics/magnolia.jpg',
       '/images/cosmetics/cosmetics-set.jpg',
+      '/images/cosmetics/cosmetics-full.jpg',
+      '/images/cosmetics/perfume.png',
     ],
   },
   {
-    id: 'watch',
-    title: 'Watch',
-    category: 'watch',
+    id: 'still-life',
+    title: 'Still Life',
+    category: 'still-life',
     filterGroup: 'product',
-    featured: true,
     images: [
-      '/images/watch/watch-prx.jpg',
-      '/images/watch/watch-1.png',
-      '/images/watch/watch-2.jpg',
-      '/images/watch/watch-3.png',
-      '/images/watch/watch-4.jpg',
+      '/images/still-life/watch-1.png',
+      '/images/still-life/watch-2.jpg',
+      '/images/still-life/watch-3.png',
+      '/images/still-life/watch-4.jpg',
+      '/images/still-life/light-painting-1.jpeg',
+      '/images/still-life/light-painting-2.jpeg',
+      '/images/still-life/light-painting-3.jpeg',
+      '/images/still-life/light-painting-4.jpeg',
+      '/images/still-life/light-painting-5.jpeg',
+      '/images/still-life/personal-work-1.jpeg',
+      '/images/still-life/personal-work-2.jpeg',
+      '/images/still-life/personal-work-3.jpeg',
+      '/images/still-life/personal-work-4.jpeg',
+      '/images/still-life/vase-1.jpeg',
+      '/images/still-life/vase-2.jpeg',
     ],
   },
   {
-    id: 'glass',
-    title: 'Glass Objects',
-    category: 'glass',
+    id: 'food',
+    title: 'Food',
+    category: 'food',
     filterGroup: 'product',
     images: [
-      '/images/glass/perfume-1.png',
-      '/images/glass/glass-still.jpg',
-      '/images/glass/glass-bottle.jpg',
-    ],
-  },
-  {
-    id: 'glasses',
-    title: 'Eyewear',
-    category: 'glasses',
-    filterGroup: 'product',
-    images: [
-      '/images/glasses/glasses-1.jpg',
-      '/images/glasses/glasses-2.jpg',
-      '/images/glasses/sunglasses.jpg',
-    ],
-  },
-  {
-    id: 'vase',
-    title: 'Vase',
-    category: 'vase',
-    filterGroup: 'product',
-    images: [
-      '/images/vase/vase-1.jpeg',
-      '/images/vase/vase-2.jpeg',
+      '/images/food/food-1.jpeg',
+      '/images/food/food-2.jpg',
+      '/images/food/food-3.jpg',
     ],
   },
   {
@@ -130,20 +113,8 @@ export const projects: Project[] = [
       '/images/portrait/portrait-1.jpg',
       '/images/portrait/portrait-2.jpg',
       '/images/portrait/portrait-3.jpg',
-    ],
-  },
-  {
-    id: 'light-painting',
-    title: 'Light Painting',
-    category: 'light-painting',
-    filterGroup: 'fine-art',
-    featured: true,
-    images: [
-      '/images/light-painting/light-painting-1.jpeg',
-      '/images/light-painting/light-painting-2.jpeg',
-      '/images/light-painting/light-painting-3.jpeg',
-      '/images/light-painting/light-painting-4.jpeg',
-      '/images/light-painting/light-painting-5.jpeg',
+      '/images/portrait/portrait-4.jpg',
+      '/images/portrait/portrait-5.jpg',
     ],
   },
   {
@@ -173,41 +144,18 @@ export const projects: Project[] = [
     ],
   },
   {
-    id: 'assignment',
-    title: 'Assignment',
-    category: 'assignment',
-    filterGroup: 'fine-art',
-    images: [
-      '/images/assignment/assignment-1.jpeg',
-      '/images/assignment/assignment-2.jpeg',
-      '/images/assignment/assignment-3.jpeg',
-      '/images/assignment/assignment-4.jpeg',
-    ],
-  },
-  {
-    id: 'airbnb',
-    title: 'Airbnb Interior',
-    category: 'airbnb',
+    id: 'interior',
+    title: 'Interior',
+    category: 'interior',
     filterGroup: 'interior',
     images: [
-      '/images/airbnb/bedroom-1.jpeg',
-      '/images/airbnb/bedroom-2.jpeg',
-      '/images/airbnb/bedroom-3.jpeg',
-      '/images/airbnb/bedroom-4.jpeg',
-      '/images/airbnb/kitchen.jpeg',
-    ],
-  },
-  {
-    id: 'rise-interior',
-    title: 'RISE Campus',
-    category: 'rise-interior',
-    filterGroup: 'interior',
-    images: [
-      '/images/rise-interior/front-desk.jpeg',
-      '/images/rise-interior/library.jpeg',
-      '/images/rise-interior/hallway.jpeg',
-      '/images/rise-interior/library-3.jpeg',
-      '/images/rise-interior/restroom.jpeg',
+      '/images/interior/kitchen.jpeg',
+      '/images/interior/bedroom.jpeg',
+      '/images/interior/front-desk.jpeg',
+      '/images/interior/library.jpeg',
+      '/images/interior/hallway.jpeg',
+      '/images/interior/library-3.jpeg',
+      '/images/interior/restroom.jpeg',
     ],
   },
   {
@@ -237,12 +185,13 @@ export const videos: VideoProject[] = [
     title: 'RISE Campus Tour',
     titleKo: 'RISE 캠퍼스 투어',
     playlistId: 'PLRwWCXTQW9LmoaKsVpJ91k8QDC94L4oi4',
+    youtubeIds: ['NIfNigY9BTM', 'SpHT7xw2H_8', '40CKVKMa0GM', 'zYayAeEKgVU', 'ZsN0wKJjzwk', 'lwX0TnVOSIo', 'sPqSIZe9ZWA'],
   },
   {
     id: 'rise-parent-interview',
     title: 'RISE Parent Interview',
     titleKo: 'RISE 학부모 인터뷰',
-    youtubeId: 'cwtHU1EBCYU',
+    youtubeIds: ['SII47SSbrQ4', 'ocwCbBGUd3E', '_xhvE1EbZlI', 'Bii3D2FXJgU', '_ACOgVSNbFw'],
   },
   {
     id: 'rise-lecture-sketch',
@@ -256,14 +205,14 @@ export const videos: VideoProject[] = [
     title: 'Lotte World — Autumn Season',
     titleKo: '롯데월드 가을 시즌 홍보영상',
     year: '2024',
-    youtubeId: '2nlyITLXdY0',
+    youtubeIds: ['2nlyITLXdY0', 'opO4k4Wro9U', 'xL1va8khc-c'],
   },
   {
     id: 'lotte-winter',
     title: 'Lotte World — Winter Season',
     titleKo: '롯데월드 겨울 시즌 홍보영상',
     year: '2024',
-    youtubeId: 'AtQdyh_kXz0',
+    youtubeIds: ['AtQdyh_kXz0', '2NIGykeWHKg', 'UeEYKEIezi8', 'X5-gw-XTbiI'],
   },
   {
     id: 'rise-online-lectures',
@@ -271,6 +220,13 @@ export const videos: VideoProject[] = [
     titleKo: 'RISE 온라인 영어 강의 47편',
     year: '2022',
     youtubeId: 'zbGUMiUtid0',
+  },
+  {
+    id: 'ai-2d-video',
+    title: 'AI-Assisted 2D Graphic Video',
+    titleKo: 'AI 활용 2D 그래픽 영상 제작',
+    year: '2024',
+    youtubeId: '1GEKvSYF1qU',
   },
 ]
 

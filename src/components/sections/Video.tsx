@@ -4,6 +4,9 @@ import { motion } from 'framer-motion'
 import { videos, type VideoProject } from '@/lib/portfolio'
 
 function getEmbedUrl(video: VideoProject): string | null {
+  if (video.youtubeIds && video.youtubeIds.length > 0) {
+    return `https://www.youtube-nocookie.com/embed/${video.youtubeIds[0]}?rel=0&modestbranding=1`
+  }
   if (video.youtubeId) {
     return `https://www.youtube-nocookie.com/embed/${video.youtubeId}?rel=0&modestbranding=1`
   }
@@ -60,12 +63,22 @@ function VideoCard({ video, index }: { video: VideoProject; index: number }) {
 
       {/* Card metadata */}
       <div className="mt-3 flex items-baseline justify-between gap-4">
-        <p
-          className="text-xs tracking-wide leading-snug"
-          style={{ color: 'var(--fg)' }}
-        >
-          {video.title}
-        </p>
+        <div className="flex items-baseline gap-3">
+          <p
+            className="text-xs tracking-wide leading-snug"
+            style={{ color: 'var(--fg)' }}
+          >
+            {video.title}
+          </p>
+          {video.youtubeIds && video.youtubeIds.length > 1 && (
+            <span
+              className="text-[9px] tracking-widest uppercase shrink-0"
+              style={{ color: 'var(--accent)' }}
+            >
+              {video.youtubeIds.length} videos
+            </span>
+          )}
+        </div>
         {video.year && (
           <span
             className="text-[9px] tracking-widest uppercase shrink-0"
