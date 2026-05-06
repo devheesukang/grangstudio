@@ -1033,7 +1033,73 @@ New behaviour in `/admin/photography` filter label section:
 
 ---
 
-- `notion_export/` is source-only — never import from it directly in the app
+### Phase 12 — Admin Nav Responsive Fix + View Site Navigation
+> Goal: fix admin header breaking on narrow viewports; add a way to navigate from admin back to the public portfolio.
+
+#### Summary of changes
+
+**1. Admin nav responsive fix**
+
+The current `AdminNav` is a single horizontal `<header>` row containing the wordmark, five nav links (Photography, Videos, Info, Design), and a Sign out button. On narrow viewports (laptop at 50% width, tablet, mobile) the links overflow horizontally — "Sign out" is clipped and the row wraps awkwardly.
+
+Fix: convert `AdminNav` from a fixed horizontal bar to a **left sidebar** that collapses to a hamburger on narrow viewports.
+
+Layout approach:
+- On `md` and above (≥768px): persistent left sidebar, `w-48`, fixed height, `flex-col` layout with links stacked vertically. Page content area sits to the right (`ml-48`).
+- Below `md`: top bar with a hamburger button that toggles a slide-out drawer (same vertical link list). Drawer overlays the content.
+- The sidebar/drawer is the same component — only the breakpoint-triggered layout changes.
+
+**Affected files:**
+- `src/components/admin/AdminNav.tsx` — rewrite to sidebar/hamburger layout
+- All admin page files (`dashboard`, `photography`, `videos`, `info`, `design`) — remove `<AdminNav />` from the page body since it will be part of the admin layout instead, OR keep it in the page and adjust outer padding to account for sidebar width. Simplest: keep it in each page but change the page `<main>` to use left padding matching sidebar width on `md+`.
+- Alternative: move `<AdminNav />` out of individual pages and into `src/app/admin/layout.tsx` as a shared sidebar so pages don't each need to include it. This is cleaner — each page's `<main>` just renders content without worrying about nav positioning.
+
+**Chosen approach:** Move `AdminNav` into `src/app/admin/layout.tsx` so it renders exactly once. Each admin page's root div/main drops the `<AdminNav />` and focuses on content only. The layout provides the sidebar shell; the page slot fills the right content area.
+
+New `admin/layout.tsx` structure:
+```tsx
+export default function AdminLayout({ children }) {
+  return (
+    <div className="min-h-screen bg-neutral-950 flex">
+      <AdminNav />  {/* sidebar — fixed left */}
+      <div className="flex-1 md:ml-48">{children}</div>
+    </div>
+  )
+}
+```
+
+`AdminNav` renders:
+- Desktop (md+): `fixed left-0 top-0 h-full w-48 flex flex-col border-r border-neutral-800 px-4 py-6`
+- Mobile: `fixed top-0 left-0 right-0 h-12 flex items-center px-4 border-b border-neutral-800` + hamburger button toggling a `fixed inset-y-0 left-0 w-48 flex flex-col` drawer with backdrop overlay
+
+**2. View Site navigation**
+
+Two changes:
+- **Logout redirects to `/`** (public portfolio) instead of `/admin` (login page). This lets the client view the site immediately after signing out.
+- **"View Site" link** in the sidebar nav (below the section links, above Sign out). Opens the public portfolio in a new tab (`target="_blank"`). Styled as a subtle link, clearly distinct from the admin section links.
+
+---
+
+#### Checklist
+
+**Admin nav → sidebar:**
+- [ ] Move `<AdminNav />` from individual page files into `src/app/admin/layout.tsx`
+- [ ] Update `src/app/admin/layout.tsx`: flex row wrapper, `AdminNav` left, content right with `md:ml-48`
+- [ ] Rewrite `src/components/admin/AdminNav.tsx`:
+  - Desktop: fixed left sidebar, `w-48`, stacked vertical links
+  - Mobile: fixed top bar + hamburger state (`useState`) → slide-out drawer + backdrop
+  - Remove `AdminNav` import/JSX from `dashboard`, `photography`, `videos`, `info`, `design` page files
+- [ ] Verify all 5 admin pages render correctly with sidebar (no double nav, no content hidden behind sidebar on mobile)
+- [ ] Commit: `feat: admin sidebar nav — responsive fix`
+
+**View Site link + logout redirect:**
+- [ ] Add "View Site →" link in `AdminNav` pointing to `/` with `target="_blank"`
+- [ ] Change `handleLogout` in `AdminNav.tsx` to `router.push('/')` (was `router.push('/admin')`)
+- [ ] Commit: `feat: admin nav — view site link, logout redirects to portfolio`
+
+---
+
+## Notes
 - All UI text in English; Korean appears only in alt text or metadata where helpful for SEO
 - The studio name "Studio Grang" comes from 봉사활동 동아리 그랑 (volunteer club "Grang") which Bosun ran 2015–2022 — it's personal and meaningful
 - `npx plugins add vercel/vercel-plugin` run this for vercel plugin. also check for other mcp server or any add ons that would help for this project managment.
