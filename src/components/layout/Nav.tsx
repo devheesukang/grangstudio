@@ -5,7 +5,7 @@ import { ThemeToggle } from './ThemeToggle'
 import { VariantSwitcher } from './VariantSwitcher'
 
 const NAV_LINKS = [
-  { label: 'Work', href: '#photography' },
+  { label: 'Photography', href: '#photography' },
   { label: 'Video', href: '#video' },
   { label: 'Design', href: '#design' },
   { label: 'Info', href: '#info' },

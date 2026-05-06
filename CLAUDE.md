@@ -102,9 +102,20 @@ Navigation: wordmark left, section links center, theme toggle right. Links scrol
 
 ### Photography Projects
 
-All source images are in `notion_export/bosun_portfolio/non_folderized/`.
+Source images for v2: `notion_export/portfolio_v2/notion1/only_pics/`.
 When building, copy to `public/images/<category>/` using clean English filenames.
-Prefer `_크게` (large) versions over `_복사` (copy) versions where both exist.
+
+**v2 Notion folder structure** (Photograph section — 8 folders, in display order):
+1. Cosmetics
+2. still life
+3. food
+4. Fine Art
+5. Portrait
+6. AI Work
+7. RISE 어학원 홈페이지 이미지 제작 (`rise-website`)
+8. interior
+
+Note: The Notion top-level section was renamed from "Work" → "Photography" in v2.
 
 | Category | Key | Image Count | Description |
 |---|---|---|---|
