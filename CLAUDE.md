@@ -715,6 +715,214 @@ The `FILTER_GROUPS` array in `Photography.tsx` currently includes tabs: `all | p
 
 ---
 
+### Phase 10 — Admin CMS
+> Goal: give Kang Bosun a private web interface to manage gallery images, videos, filter labels, and info text — without touching code or doing a redeploy.
+
+#### Overview
+
+The admin is a password-protected set of pages at `/admin`. It reads and writes a single `content.json` file stored in **Vercel Blob**. The public site reads this file at request time and merges it over the defaults in `portfolio.ts`. If no Blob config exists yet, the site falls back to `portfolio.ts` with no visible change.
+
+New uploaded images are also stored in Vercel Blob (not in `public/images/`), so the filesystem constraint on Vercel is never an issue.
+
+---
+
+#### What the admin can edit
+
+**Photography section**
+- Toggle individual images on/off (show/hide without deleting)
+- Drag to reorder images within a category
+- Upload new images to a category (goes to Vercel Blob, URL stored in config)
+- Toggle entire categories on/off
+- Rename filter tab labels (e.g. "Still Life" → anything)
+- Reorder filter tabs
+
+**Video section**
+- Toggle individual videos on/off
+- Drag to reorder videos
+- Add a new video entry: title, title (Korean), year, single YouTube ID or multiple YouTube IDs
+- Edit an existing video entry's title, year, or IDs
+- Delete a video entry
+
+**Info section**
+- Edit bio text (one line)
+- Edit email address
+- Edit phone number
+- Edit Instagram handle
+
+**What the admin cannot edit (stays in code)**
+- Design variants (V1/V2/V3) and their colors/fonts — these are design decisions, not content
+- Hero section copy ("Studio Grang", role subtitle) — brand identity, not user content
+- Site structure and layout
+
+---
+
+#### How to access
+
+URL: `yourdomain.com/admin`
+
+A single password form is shown. No username — there is only one admin (Bosun). On correct password, a session cookie is set and the browser is redirected to `/admin/dashboard`.
+
+**Admin pages:**
+```
+/admin                  → password login form
+/admin/dashboard        → overview: links to each section
+/admin/photography      → gallery management (toggle, reorder, upload)
+/admin/videos           → video management (toggle, reorder, add, edit)
+/admin/info             → info section text editor
+```
+
+---
+
+#### Security
+
+**Authentication method: password-only, httpOnly session cookie**
+
+- The admin password is stored as an environment variable `ADMIN_PASSWORD` in Vercel (never in the codebase)
+- Login: POST to `/api/admin/login` → compares submitted password against `ADMIN_PASSWORD` → on match, sets a signed httpOnly session cookie (JWT signed with `ADMIN_JWT_SECRET` env var) with a 24-hour expiry
+- All `/admin/*` routes are protected by Next.js Middleware: if the cookie is missing or expired, redirect to `/admin` (login)
+- Logout: DELETE to `/api/admin/logout` clears the cookie, redirects to `/admin`
+- Login rate limiting: after 5 failed attempts within 10 minutes from the same IP, the login endpoint returns 429 for 10 minutes (tracked in Vercel Blob or in-memory per function instance)
+- No password recovery UI — if password is lost, it is changed via `vercel env` CLI (intentional, keeps attack surface small)
+
+**Environment variables required (set via `vercel env add`):**
+```
+ADMIN_PASSWORD        — the login password (min 12 chars recommended)
+ADMIN_JWT_SECRET      — random 32-byte hex string for signing session tokens
+BLOB_READ_WRITE_TOKEN — Vercel Blob token (auto-provisioned when Blob store is added)
+```
+
+---
+
+#### Architecture: how data flows
+
+```
+Admin page
+  ├── Upload image   → POST /api/admin/upload   → Vercel Blob (returns URL)
+  ├── Save config    → POST /api/admin/content   → writes content.json to Vercel Blob
+  └── Read config    → GET  /api/admin/content   → reads content.json from Vercel Blob
+
+Public site (gallery, video, info sections)
+  └── at render time → GET content.json from Vercel Blob → merge over portfolio.ts defaults
+```
+
+`content.json` structure stored in Vercel Blob:
+```json
+{
+  "photography": {
+    "filterLabels": {
+      "product": "Still Life",
+      "portrait": "Portrait",
+      "fine-art": "Fine Art",
+      "ai": "AI",
+      "interior": "Interior"
+    },
+    "filterOrder": ["all", "product", "portrait", "fine-art", "ai", "interior"],
+    "projects": [
+      {
+        "id": "cosmetics",
+        "visible": true,
+        "images": [
+          { "src": "/images/cosmetics/foundation-1.jpg", "visible": true },
+          { "src": "https://blob.vercel-storage.com/abc123.jpg", "visible": true }
+        ]
+      }
+    ]
+  },
+  "videos": [
+    {
+      "id": "59sec-film",
+      "visible": true,
+      "order": 0,
+      "title": "59-Second Film Festival",
+      "titleKo": "희망리턴패키지 59초 영화제 3등 수상작",
+      "year": "2023",
+      "youtubeId": "IIzokW_guBs"
+    }
+  ],
+  "info": {
+    "bio": "Visual storyteller based in Seoul, specializing in brand and content direction.",
+    "email": "wolfkang0514@naver.com",
+    "phone": "010-6401-0514",
+    "instagram": "studio.grang"
+  }
+}
+```
+
+**Key rule:** `portfolio.ts` remains the source of truth for the initial/default state. `content.json` in Blob is a delta — it only overrides what has been explicitly changed. If `content.json` does not exist in Blob, the site renders exactly as it does today with no change.
+
+---
+
+#### Dependencies to add
+
+| Package | Purpose |
+|---|---|
+| `@vercel/blob` | Read/write Blob storage (images + content.json) |
+| `@dnd-kit/core` + `@dnd-kit/sortable` | Drag-to-reorder in admin UI |
+| `jose` | Sign and verify JWT session tokens (no heavy auth library) |
+
+---
+
+#### Checklist
+
+**Setup:**
+- [ ] Add Vercel Blob store via `vercel env` / Vercel dashboard — get `BLOB_READ_WRITE_TOKEN`
+- [ ] Add `ADMIN_PASSWORD` and `ADMIN_JWT_SECRET` to Vercel env vars (all environments)
+- [ ] Install dependencies: `@vercel/blob`, `@dnd-kit/core`, `@dnd-kit/sortable`, `jose`
+- [ ] Commit: `chore: add admin dependencies`
+
+**Auth:**
+- [ ] Create `src/middleware.ts`: protect `/admin/dashboard`, `/admin/photography`, `/admin/videos`, `/admin/info` — redirect to `/admin` if session cookie missing or invalid
+- [ ] Create `POST /api/admin/login`: verify password, set signed JWT cookie, return 200 or 401
+- [ ] Create `POST /api/admin/logout`: clear cookie, return 200
+- [ ] Build `/admin` login page: single password field, submit button, error state
+- [ ] Commit: `feat: admin auth — password login, session cookie, middleware`
+
+**Content API:**
+- [ ] Create `GET /api/admin/content`: read `content.json` from Blob; if not found, return merged default from `portfolio.ts`
+- [ ] Create `POST /api/admin/content`: write updated `content.json` to Blob
+- [ ] Create `POST /api/admin/upload`: receive image file, upload to Vercel Blob, return public URL
+- [ ] Commit: `feat: admin content API — read/write Blob config, image upload`
+
+**Public site — read from Blob:**
+- [ ] Update `Photography` section to fetch config from Blob at render time (SSR); fall back to `portfolio.ts` if fetch fails
+- [ ] Update `Video` section to fetch config from Blob at render time (SSR); fall back to `portfolio.ts` if fetch fails
+- [ ] Update `Info` section to fetch config from Blob at render time (SSR); fall back to hardcoded defaults if fetch fails
+- [ ] Commit: `feat: public site reads live config from Vercel Blob`
+
+**Admin UI — Photography:**
+- [ ] Build `/admin/photography` page: list all categories, each showing its images in order
+- [ ] Per image: thumbnail preview, visibility toggle (eye icon), drag handle for reorder
+- [ ] Per category: visibility toggle, drag handle to reorder category
+- [ ] Upload button per category: opens file picker, uploads to Blob, appends to category image list
+- [ ] Filter label editor: inline text inputs for each tab label
+- [ ] Save button: POSTs updated config to `/api/admin/content`
+- [ ] Commit: `feat: admin photography management UI`
+
+**Admin UI — Videos:**
+- [ ] Build `/admin/videos` page: list all video entries, drag to reorder
+- [ ] Per video: visibility toggle, edit button (opens inline form for title/year/IDs), delete button
+- [ ] Add video form: title, title Korean, year, YouTube ID(s) (comma-separated for multi-video)
+- [ ] Save button: POSTs updated config
+- [ ] Commit: `feat: admin video management UI`
+
+**Admin UI — Info:**
+- [ ] Build `/admin/info` page: text inputs for bio, email, phone, Instagram handle
+- [ ] Live preview of how info section will look
+- [ ] Save button: POSTs updated config
+- [ ] Commit: `feat: admin info editor UI`
+
+**Admin dashboard:**
+- [ ] Build `/admin/dashboard`: three cards linking to Photography, Videos, Info editors; logout button
+- [ ] Commit: `feat: admin dashboard`
+
+**Testing & security review:**
+- [ ] Verify unauthenticated requests to all `/admin/*` routes redirect to login
+- [ ] Verify `/api/admin/*` routes return 401 without valid session cookie
+- [ ] Verify public site falls back cleanly if Blob is unreachable
+- [ ] Commit: `chore: admin phase complete`
+
+---
+
 ## Notes
 
 - `notion_export/` is source-only — never import from it directly in the app
