@@ -18,6 +18,67 @@ import {
 import { CSS } from '@dnd-kit/utilities'
 import type { ContentConfig, VideoConfig } from '@/lib/adminContent'
 
+function toYouTubeWatchUrl(id: string): string {
+  return `https://www.youtube.com/watch?v=${id}`
+}
+
+function toYouTubePlaylistUrl(id: string): string {
+  return `https://www.youtube.com/playlist?list=${id}`
+}
+
+function normalizeVideoForForm(video: VideoConfig): VideoConfig {
+  return {
+    ...video,
+    youtubeId: video.playlistId
+      ? toYouTubePlaylistUrl(video.playlistId)
+      : video.youtubeId
+        ? toYouTubeWatchUrl(video.youtubeId)
+        : '',
+    youtubeIds: video.youtubeIds?.map(toYouTubeWatchUrl) ?? [],
+    playlistId: undefined,
+  }
+}
+
+function parseYouTubeUrl(value: string): { youtubeId?: string; playlistId?: string } {
+  const trimmed = value.trim()
+  if (!trimmed) return {}
+
+  try {
+    const url = new URL(trimmed)
+    const host = url.hostname.replace(/^www\./, '')
+    const list = url.searchParams.get('list') ?? undefined
+
+    if (host === 'youtu.be') {
+      const id = url.pathname.split('/').filter(Boolean)[0]
+      return id ? { youtubeId: id } : {}
+    }
+
+    if (host === 'youtube.com' || host === 'm.youtube.com' || host === 'youtube-nocookie.com') {
+      const watchId = url.searchParams.get('v')
+      if (watchId) return { youtubeId: watchId }
+
+      if (list) return { playlistId: list }
+
+      const parts = url.pathname.split('/').filter(Boolean)
+      const embedIndex = parts.findIndex((part) => ['embed', 'shorts', 'live'].includes(part))
+      if (embedIndex >= 0 && parts[embedIndex + 1]) {
+        return { youtubeId: parts[embedIndex + 1] }
+      }
+    }
+  } catch {
+    return { youtubeId: trimmed }
+  }
+
+  return { youtubeId: trimmed }
+}
+
+function splitYouTubeUrls(value: string): string[] {
+  return value
+    .split(/[\n,]+/)
+    .map((item) => item.trim())
+    .filter(Boolean)
+}
+
 function SortableVideoRow({
   video,
   onToggle,
@@ -101,15 +162,17 @@ function VideoForm({
   onCancel: () => void
 }) {
   const [form, setForm] = useState<VideoConfig>(
-    initial ?? {
-      id: '',
-      visible: true,
-      title: '',
-      titleKo: '',
-      year: '',
-      youtubeId: '',
-      youtubeIds: [],
-    }
+    initial
+      ? normalizeVideoForForm(initial)
+      : {
+          id: '',
+          visible: true,
+          title: '',
+          titleKo: '',
+          year: '',
+          youtubeId: '',
+          youtubeIds: [],
+        }
   )
 
   function set(key: keyof VideoConfig, value: string | boolean | string[]) {
@@ -118,10 +181,19 @@ function VideoForm({
 
   function handleSave() {
     const id = form.id.trim() || form.title.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '')
-    const youtubeIds = typeof form.youtubeIds === 'string'
-      ? (form.youtubeIds as string).split(',').map((s: string) => s.trim()).filter(Boolean)
-      : form.youtubeIds ?? []
-    onSave({ ...form, id, youtubeIds: youtubeIds.length ? youtubeIds : undefined })
+    const single = parseYouTubeUrl(form.youtubeId ?? '')
+    const youtubeIds = (form.youtubeIds ?? [])
+      .flatMap(splitYouTubeUrls)
+      .map((url) => parseYouTubeUrl(url).youtubeId)
+      .filter((youtubeId): youtubeId is string => Boolean(youtubeId))
+
+    onSave({
+      ...form,
+      id,
+      youtubeId: single.youtubeId,
+      playlistId: single.playlistId,
+      youtubeIds: youtubeIds.length ? youtubeIds : undefined,
+    })
   }
 
   return (
@@ -134,7 +206,7 @@ function VideoForm({
           { key: 'title', label: 'Title (English)', placeholder: '59-Second Film Festival' },
           { key: 'titleKo', label: 'Title (Korean)', placeholder: '희망리턴패키지 59초 영화제' },
           { key: 'year', label: 'Year', placeholder: '2023' },
-          { key: 'youtubeId', label: 'YouTube ID (single)', placeholder: 'IIzokW_guBs' },
+          { key: 'youtubeId', label: 'YouTube URL', placeholder: 'https://www.youtube.com/watch?v=IIzokW_guBs' },
         ].map(({ key, label, placeholder }) => (
           <div key={key}>
             <label className="text-[10px] text-neutral-500 tracking-widest uppercase block mb-1">{label}</label>
@@ -149,14 +221,14 @@ function VideoForm({
         ))}
         <div>
           <label className="text-[10px] text-neutral-500 tracking-widest uppercase block mb-1">
-            YouTube IDs (multiple — comma-separated)
+            YouTube URLs (multiple — comma or newline separated)
           </label>
-          <input
-            type="text"
-            value={Array.isArray(form.youtubeIds) ? form.youtubeIds.join(', ') : ''}
-            onChange={(e) => set('youtubeIds', e.target.value.split(',').map((s) => s.trim()).filter(Boolean))}
-            placeholder="AtQdyh_kXz0, 2NIGykeWHKg, UeEYKEIezi8"
-            className="w-full bg-neutral-800 border border-neutral-700 text-white text-xs px-3 py-2 outline-none focus:border-neutral-500 placeholder:text-neutral-600"
+          <textarea
+            value={Array.isArray(form.youtubeIds) ? form.youtubeIds.join('\n') : ''}
+            onChange={(e) => set('youtubeIds', splitYouTubeUrls(e.target.value))}
+            placeholder={'https://youtu.be/AtQdyh_kXz0\nhttps://www.youtube.com/watch?v=2NIGykeWHKg'}
+            rows={3}
+            className="w-full resize-y bg-neutral-800 border border-neutral-700 text-white text-xs px-3 py-2 outline-none focus:border-neutral-500 placeholder:text-neutral-600"
           />
         </div>
       </div>
