@@ -873,11 +873,12 @@ Public site (gallery, video, info sections)
 - [x] Commit: `chore: add admin dependencies`
 
 **Auth:**
-- [ ] Create `src/middleware.ts`: protect `/admin/dashboard`, `/admin/photography`, `/admin/videos`, `/admin/info` — redirect to `/admin` if session cookie missing or invalid
-- [ ] Create `POST /api/admin/login`: verify password, set signed JWT cookie, return 200 or 401
-- [ ] Create `POST /api/admin/logout`: clear cookie, return 200
-- [ ] Build `/admin` login page: single password field, submit button, error state
-- [ ] Commit: `feat: admin auth — password login, session cookie, middleware`
+- [x] Create `src/middleware.ts`: protect `/admin/dashboard`, `/admin/photography`, `/admin/videos`, `/admin/info` — redirect to `/admin` if session cookie missing or invalid
+- [x] Create `POST /api/admin/login`: verify password, set signed JWT cookie, return 200 or 401
+- [x] Create `POST /api/admin/logout`: clear cookie, return 200
+- [x] Build `/admin` login page: single password field, submit button, error state
+- [x] Create `src/app/admin/layout.tsx`: standalone layout (no portfolio nav/theme), noindex robots
+- [x] Commit: `feat: admin auth — password login, session cookie, middleware`
 
 **Content API:**
 - [ ] Create `GET /api/admin/content`: read `content.json` from Blob; if not found, return merged default from `portfolio.ts`
