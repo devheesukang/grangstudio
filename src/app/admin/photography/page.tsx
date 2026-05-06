@@ -1,0 +1,337 @@
+'use client'
+
+import { useEffect, useState, useRef } from 'react'
+import Image from 'next/image'
+import { AdminNav } from '@/components/admin/AdminNav'
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from '@dnd-kit/core'
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+  arrayMove,
+} from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
+import type { ContentConfig, ProjectConfig, ImageEntry } from '@/lib/adminContent'
+
+// ─── Sortable image tile ───────────────────────────────────────────────────
+
+function SortableImage({
+  entry,
+  onToggle,
+}: {
+  entry: ImageEntry
+  onToggle: () => void
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id: entry.src })
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.4 : 1,
+  }
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className="flex items-center gap-3 border border-neutral-800 px-3 py-2"
+    >
+      {/* Drag handle */}
+      <button
+        {...attributes}
+        {...listeners}
+        className="text-neutral-600 hover:text-neutral-400 cursor-grab active:cursor-grabbing shrink-0 touch-none"
+        aria-label="Drag to reorder"
+      >
+        ⠿
+      </button>
+
+      {/* Thumbnail */}
+      <div className="w-10 h-10 relative shrink-0 bg-neutral-800 overflow-hidden">
+        <Image src={entry.src} alt="" fill className="object-cover" unoptimized />
+      </div>
+
+      {/* Filename */}
+      <span className="text-xs text-neutral-400 truncate flex-1 min-w-0">
+        {entry.src.split('/').pop()}
+      </span>
+
+      {/* Visibility toggle */}
+      <button
+        onClick={onToggle}
+        className="shrink-0 text-xs tracking-widest uppercase transition-colors"
+        style={{ color: entry.visible ? '#6ee7b7' : '#6b7280' }}
+        aria-label={entry.visible ? 'Hide image' : 'Show image'}
+      >
+        {entry.visible ? 'On' : 'Off'}
+      </button>
+    </div>
+  )
+}
+
+// ─── Category block ────────────────────────────────────────────────────────
+
+function CategoryBlock({
+  project,
+  onToggleCategory,
+  onToggleImage,
+  onReorderImages,
+  onUpload,
+}: {
+  project: ProjectConfig
+  onToggleCategory: () => void
+  onToggleImage: (src: string) => void
+  onReorderImages: (images: ImageEntry[]) => void
+  onUpload: (projectId: string, file: File) => Promise<void>
+}) {
+  const sensors = useSensors(useSensor(PointerSensor))
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [uploading, setUploading] = useState(false)
+
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event
+    if (over && active.id !== over.id) {
+      const oldIndex = project.images.findIndex((img) => img.src === active.id)
+      const newIndex = project.images.findIndex((img) => img.src === over.id)
+      onReorderImages(arrayMove(project.images, oldIndex, newIndex))
+    }
+  }
+
+  async function handleFileChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploading(true)
+    await onUpload(project.id, file)
+    setUploading(false)
+    e.target.value = ''
+  }
+
+  return (
+    <div className="border border-neutral-800 mb-6">
+      {/* Category header */}
+      <div className="flex items-center justify-between px-4 py-3 border-b border-neutral-800 bg-neutral-900">
+        <span className="text-xs tracking-widest uppercase text-white">
+          {project.id} <span className="text-neutral-500">({project.images.length})</span>
+        </span>
+        <div className="flex items-center gap-4">
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*"
+            className="hidden"
+            onChange={handleFileChange}
+          />
+          <button
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+            className="text-xs tracking-widest uppercase text-neutral-400 hover:text-white transition-colors disabled:opacity-40"
+          >
+            {uploading ? 'Uploading…' : '+ Upload'}
+          </button>
+          <button
+            onClick={onToggleCategory}
+            className="text-xs tracking-widest uppercase transition-colors"
+            style={{ color: project.visible ? '#6ee7b7' : '#6b7280' }}
+          >
+            {project.visible ? 'Visible' : 'Hidden'}
+          </button>
+        </div>
+      </div>
+
+      {/* Image list */}
+      <div className="p-3 flex flex-col gap-1.5">
+        <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <SortableContext
+            items={project.images.map((img) => img.src)}
+            strategy={verticalListSortingStrategy}
+          >
+            {project.images.map((entry) => (
+              <SortableImage
+                key={entry.src}
+                entry={entry}
+                onToggle={() => onToggleImage(entry.src)}
+              />
+            ))}
+          </SortableContext>
+        </DndContext>
+      </div>
+    </div>
+  )
+}
+
+// ─── Main page ─────────────────────────────────────────────────────────────
+
+export default function PhotographyAdminPage() {
+  const [config, setConfig] = useState<ContentConfig | null>(null)
+  const [saving, setSaving] = useState(false)
+  const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+
+  useEffect(() => {
+    fetch('/api/admin/content')
+      .then((r) => r.json())
+      .then(setConfig)
+  }, [])
+
+  function updatePhotoConfig(updater: (prev: ContentConfig['photography']) => ContentConfig['photography']) {
+    setConfig((prev) =>
+      prev ? { ...prev, photography: updater(prev.photography) } : prev
+    )
+  }
+
+  function toggleCategory(projectId: string) {
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      projects: photo.projects.map((p) =>
+        p.id === projectId ? { ...p, visible: !p.visible } : p
+      ),
+    }))
+  }
+
+  function toggleImage(projectId: string, src: string) {
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      projects: photo.projects.map((p) =>
+        p.id === projectId
+          ? {
+              ...p,
+              images: p.images.map((img) =>
+                img.src === src ? { ...img, visible: !img.visible } : img
+              ),
+            }
+          : p
+      ),
+    }))
+  }
+
+  function reorderImages(projectId: string, images: ImageEntry[]) {
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      projects: photo.projects.map((p) =>
+        p.id === projectId ? { ...p, images } : p
+      ),
+    }))
+  }
+
+  async function handleUpload(projectId: string, file: File) {
+    const formData = new FormData()
+    formData.append('file', file)
+    const res = await fetch('/api/admin/upload', { method: 'POST', body: formData })
+    if (!res.ok) {
+      alert('Upload failed.')
+      return
+    }
+    const { url } = await res.json()
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      projects: photo.projects.map((p) =>
+        p.id === projectId
+          ? { ...p, images: [...p.images, { src: url, visible: true }] }
+          : p
+      ),
+    }))
+  }
+
+  function updateFilterLabel(key: string, value: string) {
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      filterLabels: { ...photo.filterLabels, [key]: value },
+    }))
+  }
+
+  async function handleSave() {
+    if (!config) return
+    setSaving(true)
+    setStatus('idle')
+    try {
+      const res = await fetch('/api/admin/content', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(config),
+      })
+      setStatus(res.ok ? 'saved' : 'error')
+    } catch {
+      setStatus('error')
+    } finally {
+      setSaving(false)
+      setTimeout(() => setStatus('idle'), 3000)
+    }
+  }
+
+  if (!config) {
+    return (
+      <div className="min-h-screen bg-neutral-950 text-white">
+        <AdminNav />
+        <div className="flex items-center justify-center h-64">
+          <span className="text-xs text-neutral-500 tracking-widest uppercase">Loading…</span>
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <div className="min-h-screen bg-neutral-950 text-white">
+      <AdminNav />
+      <main className="max-w-3xl mx-auto px-6 py-12">
+        <div className="flex items-center justify-between mb-10">
+          <h1 className="text-xs tracking-[0.5em] uppercase text-neutral-500">Photography</h1>
+          <div className="flex items-center gap-4">
+            {status === 'saved' && (
+              <span className="text-xs text-emerald-400 tracking-widest uppercase">Saved</span>
+            )}
+            {status === 'error' && (
+              <span className="text-xs text-red-400 tracking-widest uppercase">Error — check Blob config</span>
+            )}
+            <button
+              onClick={handleSave}
+              disabled={saving}
+              className="bg-white text-black text-xs font-medium px-5 py-2 tracking-widest uppercase hover:bg-neutral-200 transition-colors disabled:opacity-50"
+            >
+              {saving ? 'Saving…' : 'Save'}
+            </button>
+          </div>
+        </div>
+
+        {/* Filter label editor */}
+        <div className="mb-10">
+          <p className="text-xs tracking-widest uppercase text-neutral-500 mb-4">Filter Tab Labels</p>
+          <div className="grid grid-cols-2 gap-2">
+            {Object.entries(config.photography.filterLabels).map(([key, label]) => (
+              <div key={key} className="flex items-center gap-2 border border-neutral-800 px-3 py-2">
+                <span className="text-xs text-neutral-500 w-20 shrink-0">{key}</span>
+                <input
+                  type="text"
+                  value={label}
+                  onChange={(e) => updateFilterLabel(key, e.target.value)}
+                  className="bg-transparent text-xs text-white outline-none flex-1 min-w-0 border-b border-transparent focus:border-neutral-600"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Category blocks */}
+        <div>
+          <p className="text-xs tracking-widest uppercase text-neutral-500 mb-4">Categories</p>
+          {config.photography.projects.map((project) => (
+            <CategoryBlock
+              key={project.id}
+              project={project}
+              onToggleCategory={() => toggleCategory(project.id)}
+              onToggleImage={(src) => toggleImage(project.id, src)}
+              onReorderImages={(images) => reorderImages(project.id, images)}
+              onUpload={handleUpload}
+            />
+          ))}
+        </div>
+      </main>
+    </div>
+  )
+}

@@ -897,30 +897,31 @@ Public site (gallery, video, info sections)
 - [x] Commit: `feat: public site reads live config from Vercel Blob`
 
 **Admin UI — Photography:**
-- [ ] Build `/admin/photography` page: list all categories, each showing its images in order
-- [ ] Per image: thumbnail preview, visibility toggle (eye icon), drag handle for reorder
-- [ ] Per category: visibility toggle, drag handle to reorder category
-- [ ] Upload button per category: opens file picker, uploads to Blob, appends to category image list
-- [ ] Filter label editor: inline text inputs for each tab label
-- [ ] Save button: POSTs updated config to `/api/admin/content`
-- [ ] Commit: `feat: admin photography management UI`
+- [x] Build `/admin/photography` page: list all categories, each showing its images in order
+- [x] Per image: thumbnail preview, visibility toggle, drag handle for reorder
+- [x] Per category: visibility toggle, upload button
+- [x] Upload button per category: opens file picker, uploads to Blob, appends to category image list
+- [x] Filter label editor: inline text inputs for each tab label
+- [x] Save button: POSTs updated config to `/api/admin/content`
+- [x] Commit: `feat: admin photography management UI`
 
 **Admin UI — Videos:**
-- [ ] Build `/admin/videos` page: list all video entries, drag to reorder
-- [ ] Per video: visibility toggle, edit button (opens inline form for title/year/IDs), delete button
-- [ ] Add video form: title, title Korean, year, YouTube ID(s) (comma-separated for multi-video)
-- [ ] Save button: POSTs updated config
-- [ ] Commit: `feat: admin video management UI`
+- [x] Build `/admin/videos` page: list all video entries, drag to reorder
+- [x] Per video: visibility toggle, edit button (opens inline form for title/year/IDs), delete button
+- [x] Add video form: title, title Korean, year, YouTube ID (single) or IDs (comma-separated)
+- [x] Save button: POSTs updated config
+- [x] Commit: `feat: admin video management UI`
 
 **Admin UI — Info:**
-- [ ] Build `/admin/info` page: text inputs for bio, email, phone, Instagram handle
-- [ ] Live preview of how info section will look
-- [ ] Save button: POSTs updated config
-- [ ] Commit: `feat: admin info editor UI`
+- [x] Build `/admin/info` page: text inputs for bio, email, phone, Instagram handle
+- [x] Live preview of how info section will look
+- [x] Save button: POSTs updated config
+- [x] Commit: `feat: admin info editor UI`
 
 **Admin dashboard:**
-- [ ] Build `/admin/dashboard`: three cards linking to Photography, Videos, Info editors; logout button
-- [ ] Commit: `feat: admin dashboard`
+- [x] Build `/admin/dashboard`: three cards linking to Photography, Videos, Info editors; logout button in nav
+- [x] Build `AdminNav` shared component: nav links + sign-out button
+- [x] Commit: `feat: admin dashboard`
 
 **Testing & security review:**
 - [ ] Verify unauthenticated requests to all `/admin/*` routes redirect to login
