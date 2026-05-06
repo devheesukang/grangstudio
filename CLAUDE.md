@@ -1016,18 +1016,20 @@ New behaviour in `/admin/photography` filter label section:
 - [x] Commit: `feat: remove public variant switcher — variant controlled by admin`
 
 **Admin design page:**
-- [ ] Add `activeVariant` to `AdminNav` link list: `/admin/design`
-- [ ] Add Design card to `/admin/dashboard`
-- [ ] Build `/admin/design` page: three variant cards showing name, font, accent color swatch; active variant highlighted; click to select; Save button POSTs updated config
-- [ ] Commit: `feat: admin design variant selector`
+- [x] Add `activeVariant` to `AdminNav` link list: `/admin/design`
+- [x] Add Design card to `/admin/dashboard`
+- [x] Build `/admin/design` page: three variant cards with accent swatch, font, name; active highlighted; click to select; Save button POSTs config
+- [x] Add `/admin/design` to middleware `PROTECTED` list and `matcher`
+- [x] Commit: `feat: admin design variant selector`
 
 **Filter tab add/delete:**
-- [ ] In `/admin/photography` filter label section: add `×` delete button per row (disable for `all` key)
-- [ ] Delete action removes key from `filterLabels` and from `filterOrder`
-- [ ] Add "Add filter tab" form at bottom of filter label section: key input + label input + Add button
-- [ ] Add action appends key to `filterLabels` and to end of `filterOrder`
-- [ ] Validate: key must be non-empty, no spaces, not already present
-- [ ] Commit: `feat: admin filter tab add/delete`
+- [x] In `/admin/photography`: render filter rows in `filterOrder` sequence (not arbitrary object key order)
+- [x] Per row: `×` delete button (disabled and titled for `all` key)
+- [x] Delete removes key from `filterLabels` and `filterOrder`
+- [x] Add filter form (dashed border row): key input (auto-sanitized to slug), label input, `+ Add` button
+- [x] Add button disabled when key is empty, label is empty, or key already exists
+- [x] Add appends key to `filterLabels` and end of `filterOrder`
+- [x] Commit: `feat: admin filter tab add/delete`
 
 ---
 

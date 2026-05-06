@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { jwtVerify } from 'jose'
 
-const PROTECTED = ['/admin/dashboard', '/admin/photography', '/admin/videos', '/admin/info']
+const PROTECTED = ['/admin/dashboard', '/admin/photography', '/admin/videos', '/admin/info', '/admin/design']
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
@@ -27,5 +27,5 @@ function redirectToLogin(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/dashboard', '/admin/photography', '/admin/videos', '/admin/info'],
+  matcher: ['/admin/dashboard', '/admin/photography', '/admin/videos', '/admin/info', '/admin/design'],
 }

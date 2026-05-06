@@ -17,6 +17,11 @@ const SECTIONS = [
     label: 'Info',
     description: 'Edit bio, email, phone number, and Instagram handle.',
   },
+  {
+    href: '/admin/design',
+    label: 'Design',
+    description: 'Choose which design variant (V1 / V2 / V3) appears on the public site.',
+  },
 ]
 
 export default function DashboardPage() {

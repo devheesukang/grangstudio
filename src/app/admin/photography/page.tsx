@@ -173,6 +173,8 @@ export default function PhotographyAdminPage() {
   const [config, setConfig] = useState<ContentConfig | null>(null)
   const [saving, setSaving] = useState(false)
   const [status, setStatus] = useState<'idle' | 'saved' | 'error'>('idle')
+  const [newTabKey, setNewTabKey] = useState('')
+  const [newTabLabel, setNewTabLabel] = useState('')
 
   useEffect(() => {
     fetch('/api/admin/content')
@@ -246,6 +248,25 @@ export default function PhotographyAdminPage() {
     }))
   }
 
+  function deleteFilterTab(key: string) {
+    updatePhotoConfig((photo) => {
+      const { [key]: _, ...rest } = photo.filterLabels
+      return {
+        ...photo,
+        filterLabels: rest,
+        filterOrder: photo.filterOrder.filter((k) => k !== key),
+      }
+    })
+  }
+
+  function addFilterTab(key: string, label: string) {
+    updatePhotoConfig((photo) => ({
+      ...photo,
+      filterLabels: { ...photo.filterLabels, [key]: label },
+      filterOrder: [...photo.filterOrder, key],
+    }))
+  }
+
   async function handleSave() {
     if (!config) return
     setSaving(true)
@@ -302,18 +323,67 @@ export default function PhotographyAdminPage() {
         {/* Filter label editor */}
         <div className="mb-10">
           <p className="text-xs tracking-widest uppercase text-neutral-500 mb-4">Filter Tab Labels</p>
-          <div className="grid grid-cols-2 gap-2">
-            {Object.entries(config.photography.filterLabels).map(([key, label]) => (
-              <div key={key} className="flex items-center gap-2 border border-neutral-800 px-3 py-2">
-                <span className="text-xs text-neutral-500 w-20 shrink-0">{key}</span>
-                <input
-                  type="text"
-                  value={label}
-                  onChange={(e) => updateFilterLabel(key, e.target.value)}
-                  className="bg-transparent text-xs text-white outline-none flex-1 min-w-0 border-b border-transparent focus:border-neutral-600"
-                />
-              </div>
-            ))}
+          <div className="flex flex-col gap-1.5 mb-3">
+            {config.photography.filterOrder.map((key) => {
+              const label = config.photography.filterLabels[key] ?? key
+              const isDeletable = key !== 'all'
+              return (
+                <div key={key} className="flex items-center gap-2 border border-neutral-800 px-3 py-2">
+                  <span className="text-xs text-neutral-600 w-24 shrink-0 font-mono">{key}</span>
+                  <input
+                    type="text"
+                    value={label}
+                    onChange={(e) => updateFilterLabel(key, e.target.value)}
+                    className="bg-transparent text-xs text-white outline-none flex-1 min-w-0 border-b border-transparent focus:border-neutral-600"
+                  />
+                  <button
+                    onClick={() => isDeletable && deleteFilterTab(key)}
+                    disabled={!isDeletable}
+                    className="text-xs tracking-widest uppercase shrink-0 transition-colors disabled:opacity-20 disabled:cursor-not-allowed"
+                    style={{ color: isDeletable ? '#ef4444' : undefined }}
+                    title={isDeletable ? 'Delete tab' : '"all" cannot be deleted'}
+                  >
+                    ×
+                  </button>
+                </div>
+              )
+            })}
+          </div>
+
+          {/* Add new filter tab */}
+          <div className="flex gap-2 items-center border border-dashed border-neutral-700 px-3 py-2">
+            <input
+              type="text"
+              value={newTabKey}
+              onChange={(e) => setNewTabKey(e.target.value.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, ''))}
+              placeholder="key (e.g. commercial)"
+              className="bg-transparent text-xs text-white outline-none w-36 border-b border-transparent focus:border-neutral-600 placeholder:text-neutral-700"
+            />
+            <input
+              type="text"
+              value={newTabLabel}
+              onChange={(e) => setNewTabLabel(e.target.value)}
+              placeholder="Label (e.g. Commercial)"
+              className="bg-transparent text-xs text-white outline-none flex-1 min-w-0 border-b border-transparent focus:border-neutral-600 placeholder:text-neutral-700"
+            />
+            <button
+              onClick={() => {
+                const k = newTabKey.trim()
+                const l = newTabLabel.trim()
+                if (!k || !l || config.photography.filterLabels[k] !== undefined) return
+                addFilterTab(k, l)
+                setNewTabKey('')
+                setNewTabLabel('')
+              }}
+              disabled={
+                !newTabKey.trim() ||
+                !newTabLabel.trim() ||
+                config.photography.filterLabels[newTabKey.trim()] !== undefined
+              }
+              className="text-xs tracking-widest uppercase text-neutral-400 hover:text-white transition-colors disabled:opacity-30 disabled:cursor-not-allowed shrink-0"
+            >
+              + Add
+            </button>
           </div>
         </div>
 
