@@ -934,7 +934,103 @@ Public site (gallery, video, info sections)
 
 ---
 
-## Notes
+### Phase 11 — Admin Layout Fix, Variant Control, Filter Tab Management
+> Goal: fix admin header overlap, move design variant control to admin, let admin manage filter tabs.
+
+#### Summary of changes
+
+**1. Fix admin header overlap (root layout isolation)**
+
+The root `src/app/layout.tsx` currently renders the portfolio `Nav` and `Footer` on every page, including `/admin/*`. This causes the portfolio nav to appear on top of the admin UI.
+
+Fix: use Next.js **route groups** to split portfolio and admin into separate layout trees.
+
+New structure:
+```
+src/app/
+├── layout.tsx                  ← bare root: html, body, global CSS, fonts only — no Nav, no Footer
+├── (site)/
+│   ├── layout.tsx              ← portfolio layout: ThemeProvider, DesignVariantProvider, Nav, Footer
+│   └── page.tsx                ← portfolio home (moved from src/app/page.tsx)
+└── admin/
+    └── layout.tsx              ← admin layout: plain wrapper div, no html/body (root layout provides those)
+```
+
+Route groups (folders wrapped in parentheses) do not affect the URL. `/` still resolves to `(site)/page.tsx`.
+
+The `DesignVariantProvider` and `ThemeProvider` stay inside `(site)/layout.tsx` — admin pages need neither.
+
+The current `src/app/admin/layout.tsx` incorrectly includes `<html>` and `<body>` tags (not valid in a nested layout). This is fixed by removing those tags and having it return a plain wrapper.
+
+**2. Remove variant switcher from public nav**
+
+`VariantSwitcher` component is removed from `Nav`. The `DesignVariantProvider` and its localStorage logic is also removed — the active variant is now controlled entirely by the admin.
+
+The active variant is stored as `activeVariant: 'v1' | 'v2' | 'v3'` in `content.json` (Blob). Default: `'v1'`.
+
+The `(site)/layout.tsx` server component reads `activeVariant` from `getEffectiveConfig()` and sets `data-design` as the initial value on a wrapper `<div>` (or passes it to a thin client component that sets it on `<html>` without flash). `defaultDesign` is set to `'v1'` if Blob is not configured.
+
+**3. Add variant control to admin**
+
+New page: `/admin/design`
+
+Displays three variant cards (V1 Cinematic/Gold, V2 Embers/Copper, V3 Slate/Contemporary). Admin clicks one to select it. Selection is saved to `content.json` under `activeVariant`. On save, the public site immediately reflects the new variant (since `revalidate = 0`).
+
+Add `/admin/design` link to `AdminNav` and dashboard cards.
+
+`content.json` gains one new top-level field:
+```json
+{ "activeVariant": "v1" }
+```
+
+**4. Filter tab management — add and delete**
+
+Currently `/admin/photography` shows filter labels as fixed key→value pairs. The admin can rename labels but cannot add new tabs or remove existing ones.
+
+New behaviour in `/admin/photography` filter label section:
+- Each existing filter row gets a **Delete** button (trashcan / `×`). Deleting a filter key removes it from both `filterLabels` and `filterOrder`.
+- An **Add filter** form at the bottom: two inputs (key slug e.g. `commercial`, display label e.g. `Commercial`) + Add button. Adds the new key to `filterLabels` and appends it to `filterOrder`.
+- Constraint: `all` cannot be deleted (it is the catch-all tab).
+- Note: adding a filter tab only creates the tab — images must be reassigned to the new `filterGroup` key via code (admin cannot reassign existing images to a new tab through the UI; that would require a separate image re-categorisation feature outside this phase scope).
+
+---
+
+#### Checklist
+
+**Layout isolation (route groups):**
+- [ ] Create `src/app/(site)/` directory
+- [ ] Move `src/app/layout.tsx` portfolio content (ThemeProvider, DesignVariantProvider, Nav, Footer) to `src/app/(site)/layout.tsx` — keep font definitions in root layout
+- [ ] Move `src/app/page.tsx` to `src/app/(site)/page.tsx`
+- [ ] Strip `src/app/layout.tsx` to bare minimum: `<html>`, `<body>`, font class variables, `globals.css` import, `{children}` only
+- [ ] Fix `src/app/admin/layout.tsx`: remove `<html>` and `<body>` tags, return a plain `<div className="min-h-screen bg-neutral-950 antialiased">{children}</div>`
+- [ ] Verify portfolio site renders identically at `/`
+- [ ] Verify admin pages no longer show portfolio Nav/Footer
+- [ ] Commit: `refactor: route groups — isolate portfolio layout from admin`
+
+**Variant switcher removal + server-side variant:**
+- [ ] Remove `<VariantSwitcher />` from `src/components/layout/Nav.tsx`
+- [ ] Remove `DesignVariantProvider` import and usage from `(site)/layout.tsx`
+- [ ] Remove `src/lib/design-variant.ts` (or keep file but strip the provider if other code depends on the type)
+- [ ] Add `activeVariant?: 'v1' | 'v2' | 'v3'` to `ContentConfig` type in `src/lib/adminContent.ts`
+- [ ] Update `buildDefaultConfig()` to include `activeVariant: 'v1'`
+- [ ] In `(site)/layout.tsx`: read `activeVariant` from `getEffectiveConfig()`, pass it to a thin `<DesignVariantApplier variant={activeVariant} />` client component that sets `document.documentElement.dataset.design` on mount (no flash since default matches server render)
+- [ ] Commit: `feat: remove public variant switcher — variant controlled by admin`
+
+**Admin design page:**
+- [ ] Add `activeVariant` to `AdminNav` link list: `/admin/design`
+- [ ] Add Design card to `/admin/dashboard`
+- [ ] Build `/admin/design` page: three variant cards showing name, font, accent color swatch; active variant highlighted; click to select; Save button POSTs updated config
+- [ ] Commit: `feat: admin design variant selector`
+
+**Filter tab add/delete:**
+- [ ] In `/admin/photography` filter label section: add `×` delete button per row (disable for `all` key)
+- [ ] Delete action removes key from `filterLabels` and from `filterOrder`
+- [ ] Add "Add filter tab" form at bottom of filter label section: key input + label input + Add button
+- [ ] Add action appends key to `filterLabels` and to end of `filterOrder`
+- [ ] Validate: key must be non-empty, no spaces, not already present
+- [ ] Commit: `feat: admin filter tab add/delete`
+
+---
 
 - `notion_export/` is source-only — never import from it directly in the app
 - All UI text in English; Korean appears only in alt text or metadata where helpful for SEO
