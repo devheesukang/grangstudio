@@ -5,7 +5,6 @@ import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { useAdminContent } from './AdminContentProvider'
 import { AdminThemeToggle } from './AdminThemeToggle'
-import { UNSAVED_MESSAGE } from '@/hooks/useAdminDirtyGuard'
 
 const LINKS = [
   { href: '/admin/photography', label: 'Photography' },
@@ -86,13 +85,13 @@ function DrawerContent({ pathname, onNav }: { pathname: string; onNav: () => voi
   const { dirty } = useAdminContent()
 
   async function handleLogout() {
-    if (dirty && !confirm(UNSAVED_MESSAGE)) return
+    if (dirty && !confirm('You have unsaved changes. Leave anyway?')) return
     await fetch('/api/admin/logout', { method: 'POST' })
     router.push('/')
   }
 
   function handleViewSite() {
-    if (dirty && !confirm(UNSAVED_MESSAGE)) return
+    if (dirty && !confirm('You have unsaved changes. Leave anyway?')) return
     const siteTab = window.open('/', '_blank')
     if (siteTab) siteTab.opener = null
     onNav?.()
@@ -140,7 +139,7 @@ export function AdminNav() {
 
   return (
     <>
-      <header className="fixed top-0 inset-x-0 z-40 flex h-14 items-center justify-between gap-4 border-b border-neutral-800 bg-neutral-950/95 px-4 backdrop-blur md:px-6">
+      <header className="fixed top-0 inset-x-0 z-40 flex h-14 items-center justify-between gap-4 border-b border-neutral-800 bg-neutral-950 px-4 backdrop-blur md:px-6">
         <Link
           href="/admin/dashboard"
           className="min-w-0 truncate text-white text-xs tracking-[0.3em] uppercase font-light"

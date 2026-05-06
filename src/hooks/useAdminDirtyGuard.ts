@@ -2,8 +2,6 @@
 
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
-export const UNSAVED_MESSAGE = '변경사항이 저장되지 않을 수도 있습니다. 페이지를 떠나시겠습니까?'
-
 function serialize(value: unknown): string {
   return JSON.stringify(value)
 }
@@ -19,7 +17,7 @@ export function useAdminDirtyGuard<T>(value: T | null) {
 
     function handleBeforeUnload(event: BeforeUnloadEvent) {
       event.preventDefault()
-      event.returnValue = UNSAVED_MESSAGE
+      event.returnValue = ''
     }
 
     function handleDocumentClick(event: MouseEvent) {
@@ -37,8 +35,7 @@ export function useAdminDirtyGuard<T>(value: T | null) {
       const url = new URL(href, window.location.href)
       if (url.origin === window.location.origin && url.pathname.startsWith('/admin')) return
 
-      const confirmed = window.confirm(UNSAVED_MESSAGE)
-      if (!confirmed) {
+      if (!window.confirm('You have unsaved changes. Leave anyway?')) {
         event.preventDefault()
         event.stopPropagation()
       }
