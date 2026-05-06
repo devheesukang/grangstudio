@@ -412,6 +412,230 @@ Phases are completed sequentially. Each ends with a git commit. Check off tasks 
 - [x] Increase info section font sizes, including Photographer & Video Director, email, phone number, and Instagram handle.
 - [x] Commit: `fix: phase 7 client edit round 2`
 
+### Phase 8 — Notion v2 Content Update [ ]
+> Source: `notion_export/portfolio_v2/notion1/only_pics/` (new Notion export).
+> Goal: restructure photography categories, add new images, update video data to match v2.
+> Do NOT make any code changes until this phase is explicitly started.
+
+#### Summary of changes
+
+The v2 Notion export introduces a major reorganization: many old sub-categories are collapsed into broader groups, two new categories are added (`still life` and `food`), two new portrait images are added, cosmetics gains two new images, and all video entries now have individual YouTube IDs (some have multiple per project). The old `watch`, `glass`, `glasses`, `vase`, `light-painting`, and `assignment` categories are retired as separate public folders; their images are redistributed.
+
+---
+
+#### A. Photography — retired categories (folders removed, images redistributed)
+
+The following `public/images/` sub-folders will be **deleted** after their images are migrated:
+
+| Old folder | Images | Destination |
+|---|---|---|
+| `watch/` | watch-1.png, watch-2.jpg, watch-3.png, watch-4.jpg, watch-prx.jpg | → `still-life/` (4 of 5 appear in v2; watch-prx.jpg not in v2 — omit) |
+| `glass/` | glass-bottle.jpg, glass-still.jpg, perfume-1.png | → glass-bottle.jpg → `food/`; glass-still.jpg & perfume-1.png not in v2 — omit |
+| `glasses/` | glasses-1.jpg, glasses-2.jpg, sunglasses.jpg | → omitted entirely — not in v2 |
+| `vase/` | vase-1.jpeg, vase-2.jpeg | → `still-life/` |
+| `light-painting/` | light-painting-1..5.jpeg | → `still-life/` |
+| `assignment/` | assignment-1..4.jpeg | → `still-life/` (개인작업 images) |
+| `airbnb/` | bedroom-1..4.jpeg, kitchen.jpeg | → `interior/` (only kitchen + bedroom-1 survive; bedroom-2..4 omitted — not in v2) |
+| `rise-interior/` | front-desk.jpeg, hallway.jpeg, library.jpeg, library-3.jpeg, restroom.jpeg | → `interior/` (all 5 survive) |
+
+---
+
+#### B. Photography — new and updated categories
+
+**NEW: `public/images/still-life/`**
+Copy from `notion_export/portfolio_v2/notion1/only_pics/` using these clean names:
+
+| Source filename | Destination |
+|---|---|
+| `시계.png` | `still-life/watch-1.png` |
+| `시계_복사.jpg` | `still-life/watch-2.jpg` |
+| `시계2.png` | `still-life/watch-3.png` |
+| `시계_복사1.jpg` | `still-life/watch-4.jpg` |
+| `라이트페인팅1.jpeg` | `still-life/light-painting-1.jpeg` |
+| `라이트페인팅2.jpeg` | `still-life/light-painting-2.jpeg` |
+| `라이트페인팅3.jpeg` | `still-life/light-painting-3.jpeg` |
+| `라이트페인팅4_크게.jpeg` | `still-life/light-painting-4.jpeg` |
+| `라이트페인팅5.jpeg` | `still-life/light-painting-5.jpeg` |
+| `개인작업_크게_2.jpeg` | `still-life/personal-work-1.jpeg` |
+| `개인작업_크게.jpeg` | `still-life/personal-work-2.jpeg` |
+| `개인작업1_크게.jpeg` | `still-life/personal-work-3.jpeg` |
+| `개인작업2_크게.jpeg` | `still-life/personal-work-4.jpeg` |
+| `화병_복사2_크게.jpeg` | `still-life/vase-1.jpeg` |
+| `화병2(1)_복사2_크게.jpeg` | `still-life/vase-2.jpeg` |
+
+**NEW: `public/images/food/`**
+Copy from `notion_export/portfolio_v2/notion1/only_pics/`:
+
+| Source filename | Destination |
+|---|---|
+| `Capture_One_Catalog0111_복사본_크게.jpeg` | `food/food-1.jpeg` |
+| `still_2x_비율.jpg` | `food/food-2.jpg` |
+| `유리병_복사.jpg` | `food/food-3.jpg` |
+
+**NEW: `public/images/interior/`** (merges old airbnb + rise-interior)
+Copy from `notion_export/portfolio_v2/notion1/only_pics/` — all are already in `public/images/` under old names:
+
+| Source filename | Destination | Old location |
+|---|---|---|
+| `부엌3_크게.jpeg` | `interior/kitchen.jpeg` | airbnb/kitchen.jpeg |
+| `침실4_크게.jpeg` | `interior/bedroom.jpeg` | airbnb/bedroom-1.jpeg |
+| `프론트_크게.jpeg` | `interior/front-desk.jpeg` | rise-interior/front-desk.jpeg |
+| `도서관_크게.jpeg` | `interior/library.jpeg` | rise-interior/library.jpeg |
+| `복도_크게.jpeg` | `interior/hallway.jpeg` | rise-interior/hallway.jpeg |
+| `도서관3_크게.jpeg` | `interior/library-3.jpeg` | rise-interior/library-3.jpeg |
+| `세면대_크게.jpeg` | `interior/restroom.jpeg` | rise-interior/restroom.jpeg |
+
+Note: `부엌3_크게.jpeg` appears twice in the source md (duplicate entry) — copy once only.
+
+**UPDATED: `public/images/cosmetics/`** — 2 new images added (12 → 14):
+
+| Source filename | Destination |
+|---|---|
+| `화장품.jpg` | `cosmetics/cosmetics-full.jpg` |
+| `향수1.png` | `cosmetics/perfume.png` |
+
+All other cosmetic filenames were already present in v1 under different English names — no re-copy needed.
+
+**UPDATED: `public/images/portrait/`** — 2 new images added (6 → 8):
+
+| Source filename | Destination |
+|---|---|
+| `IMG_4212_복사2.jpg` | `portrait/portrait-4.jpg` |
+| `IMG_5732_복사.jpg` | `portrait/portrait-5.jpg` |
+
+**UNCHANGED:** `fine-art/`, `ai-work/`, `rise-website/`, `design/` — no file changes needed.
+
+---
+
+#### C. `src/lib/portfolio.ts` — category and project changes
+
+**Type changes:**
+- `Category` type: remove `'watch' | 'glass' | 'glasses' | 'vase' | 'light-painting' | 'assignment' | 'airbnb' | 'rise-interior'`; add `'still-life' | 'food' | 'interior'`
+- `FilterGroup` type: unchanged (`all | product | portrait | fine-art | ai | interior`)
+- `VideoProject` type: add `youtubeIds?: string[]` field to support multi-video projects
+
+**Project array — remove these entries entirely:**
+- `watch`, `glass`, `glasses`, `vase`, `light-painting`, `assignment`, `airbnb`, `rise-interior`
+
+**Project array — add these new entries:**
+
+```ts
+{
+  id: 'still-life',
+  title: 'Still Life',
+  category: 'still-life',
+  filterGroup: 'product',
+  images: [
+    '/images/still-life/watch-1.png',
+    '/images/still-life/watch-2.jpg',
+    '/images/still-life/watch-3.png',
+    '/images/still-life/watch-4.jpg',
+    '/images/still-life/light-painting-1.jpeg',
+    '/images/still-life/light-painting-2.jpeg',
+    '/images/still-life/light-painting-3.jpeg',
+    '/images/still-life/light-painting-4.jpeg',
+    '/images/still-life/light-painting-5.jpeg',
+    '/images/still-life/personal-work-1.jpeg',
+    '/images/still-life/personal-work-2.jpeg',
+    '/images/still-life/personal-work-3.jpeg',
+    '/images/still-life/personal-work-4.jpeg',
+    '/images/still-life/vase-1.jpeg',
+    '/images/still-life/vase-2.jpeg',
+  ],
+},
+{
+  id: 'food',
+  title: 'Food',
+  category: 'food',
+  filterGroup: 'product',
+  images: [
+    '/images/food/food-1.jpeg',
+    '/images/food/food-2.jpg',
+    '/images/food/food-3.jpg',
+  ],
+},
+{
+  id: 'interior',
+  title: 'Interior',
+  category: 'interior',
+  filterGroup: 'interior',
+  images: [
+    '/images/interior/kitchen.jpeg',
+    '/images/interior/bedroom.jpeg',
+    '/images/interior/front-desk.jpeg',
+    '/images/interior/library.jpeg',
+    '/images/interior/hallway.jpeg',
+    '/images/interior/library-3.jpeg',
+    '/images/interior/restroom.jpeg',
+  ],
+},
+```
+
+**Project array — update existing entries:**
+
+- `cosmetics` images: add `'/images/cosmetics/cosmetics-full.jpg'` and `'/images/cosmetics/perfume.png'` at end of array
+- `portrait` images: add `'/images/portrait/portrait-4.jpg'` and `'/images/portrait/portrait-5.jpg'` at end of array
+- `rise-website` filterGroup: change from `'interior'` → keep `'interior'` (unchanged)
+
+**`FILTER_LABELS`:** The label for `product` is already `'Still Life'` — no change needed.
+
+---
+
+#### D. Video — updates to `src/lib/portfolio.ts`
+
+The `VideoProject` type needs a new optional field:
+```ts
+youtubeIds?: string[]  // for projects with multiple individual videos
+```
+
+**Updated video entries:**
+
+| Entry | Change |
+|---|---|
+| RISE Campus Tour | Add `youtubeIds: ['NIfNigY9BTM', 'SpHT7xw2H_8', '40CKVKMa0GM', 'zYayAeEKgVU', 'ZsN0wKJjzwk', 'lwX0TnVOSIo', 'sPqSIZe9ZWA']`; keep `playlistId` |
+| RISE Parent Interview | Replace `youtubeId: 'cwtHU1EBCYU'` with `youtubeIds: ['SII47SSbrQ4', 'ocwCbBGUd3E', '_xhvE1EbZlI', 'Bii3D2FXJgU', '_ACOgVSNbFw']` |
+| Lotte World Autumn | Add `youtubeIds: ['2nlyITLXdY0', 'opO4k4Wro9U', 'xL1va8khc-c']`; remove single `youtubeId` |
+| Lotte World Winter | Add `youtubeIds: ['AtQdyh_kXz0', '2NIGykeWHKg', 'UeEYKEIezi8', 'X5-gw-XTbiI']`; remove single `youtubeId` |
+| RISE Lecture Sketch | Unchanged |
+| RISE Online Lectures | Unchanged |
+| **NEW** | Add entry: `{ id: 'ai-2d-video', title: 'AI-Assisted 2D Graphic Video', titleKo: 'AI 활용 2D 그래픽 영상 제작', year: '2024', youtubeId: '1GEKvSYF1qU' }` |
+
+For multi-video projects, the Video section UI will need to handle `youtubeIds` — show the first video as the primary embed, or show a scrollable set of thumbnails. Decide on approach during implementation.
+
+---
+
+#### E. `src/components/sections/Photography.tsx` — filter tab update
+
+The `FILTER_GROUPS` array in `Photography.tsx` currently includes tabs: `all | product | portrait | fine-art | ai | interior`. No tab label changes needed — `'Still Life'` and `'Interior'` labels stay. The new `still-life`, `food`, and `interior` categories already map to the correct existing `filterGroup` values (`product` and `interior`).
+
+---
+
+#### F. CLAUDE.md — documentation updates after phase completes
+
+- Update Portfolio Content table (remove retired categories, add still-life and food rows)
+- Update Gallery groupings: Still Life now covers (cosmetics, food, still-life); Fine Art covers (fine-art only); Interior covers (interior, rise-website)
+- Update Video Projects table with new IDs
+
+---
+
+#### Checklist
+
+- [ ] Copy new images to `public/images/still-life/` (15 files)
+- [ ] Copy new images to `public/images/food/` (3 files)
+- [ ] Copy new images to `public/images/interior/` (7 files)
+- [ ] Add 2 new images to `public/images/cosmetics/`
+- [ ] Add 2 new images to `public/images/portrait/`
+- [ ] Update `Category` and `VideoProject` types in `portfolio.ts`
+- [ ] Remove retired project entries from `portfolio.ts`
+- [ ] Add `still-life`, `food`, `interior` project entries to `portfolio.ts`
+- [ ] Update `cosmetics` and `portrait` image arrays in `portfolio.ts`
+- [ ] Update all video entries with new/multiple YouTube IDs in `portfolio.ts`
+- [ ] Add new AI 2D video entry to `portfolio.ts`
+- [ ] Update Video section UI to handle `youtubeIds` array
+- [ ] Delete retired `public/images/` folders: watch, glass, glasses, vase, light-painting, assignment, airbnb, rise-interior
+- [ ] Update CLAUDE.md content tables
+- [ ] Commit: `content: notion v2 — restructure categories and update video data`
+
 ---
 
 ## Notes
