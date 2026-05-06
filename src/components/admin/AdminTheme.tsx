@@ -1,6 +1,6 @@
 'use client'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useContext, useEffect, useState } from 'react'
 
 type AdminTheme = 'dark' | 'light'
 
@@ -11,13 +11,16 @@ const AdminThemeContext = createContext<{
   toggleTheme: () => void
 } | null>(null)
 
-function getInitialTheme(): AdminTheme {
-  if (typeof window === 'undefined') return 'dark'
-  return localStorage.getItem(STORAGE_KEY) === 'light' ? 'light' : 'dark'
-}
-
 export function AdminThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<AdminTheme>(getInitialTheme)
+  const [theme, setTheme] = useState<AdminTheme>('dark')
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+      setTheme(localStorage.getItem(STORAGE_KEY) === 'light' ? 'light' : 'dark')
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [])
 
   function toggleTheme() {
     setTheme((current) => {

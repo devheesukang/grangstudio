@@ -18,6 +18,7 @@ import {
 } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { projects as defaultProjects } from '@/lib/portfolio'
+import { getUploadedBlobPathname } from '@/lib/blobPath'
 import type { ContentConfig, ProjectConfig, ImageEntry } from '@/lib/adminContent'
 
 const DEFAULT_PROJECT_IDS = new Set(defaultProjects.map((project) => project.id))
@@ -233,8 +234,23 @@ export default function PhotographyAdminPage() {
     }))
   }
 
-  function deleteImage(projectId: string, src: string) {
+  async function deleteImage(projectId: string, src: string) {
     if (!confirm('Delete this image from the category?')) return
+    const blobPathname = getUploadedBlobPathname(src)
+
+    if (blobPathname) {
+      const res = await fetch('/api/admin/blob', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ src }),
+      })
+
+      if (!res.ok) {
+        alert('Blob delete failed. The image was not removed.')
+        return
+      }
+    }
+
     updatePhotoConfig((photo) => ({
       ...photo,
       projects: photo.projects.map((p) =>

@@ -1216,6 +1216,7 @@ The View Site action opens the public portfolio with `window.open('/', '_blank')
 **Admin theme state:**
 - [x] Add `AdminThemeProvider` with admin-only localStorage state
 - [x] Wrap `src/app/admin/layout.tsx` with the admin theme provider
+- [x] Avoid hydration mismatch by rendering dark on the server/first client pass, then applying saved admin theme after mount
 
 **Admin toggle UI:**
 - [x] Add `AdminThemeToggle` with sun/moon icons matching the public toggle
@@ -1358,6 +1359,45 @@ The selected design variant card uses a dark active background in both admin the
 **Light theme contrast:**
 - [x] Set explicit active title color for selected design variant
 - [x] Set explicit active subtitle color for selected design variant
+
+**Verification:**
+- [x] Run production build check (`npm run build`)
+- [x] Run lint check (`npm run lint`)
+
+---
+
+### Phase 20 — Admin Uploaded Image Blob Deletion
+> Goal: when an admin deletes an uploaded photography image, remove the corresponding private Vercel Blob object as well as the admin config entry.
+
+#### Summary of changes
+
+**1. Server-side Blob delete API**
+
+Add an authenticated admin API route for deleting uploaded image blobs. The route accepts an image URL/path from admin config, maps app-local `/api/blob/uploads/...` URLs back to the private Blob pathname, and deletes only files under `uploads/`.
+
+**2. Static image protection**
+
+Static portfolio images under `/images/...` are not Blob files and should not be passed to Vercel Blob deletion. Deleting those images only removes the category entry from admin config.
+
+**3. Admin image delete flow**
+
+When the admin deletes an image, the UI first confirms the action. If the image points to an uploaded Blob file, the admin page calls the delete API before removing the image from local config. If Blob deletion fails, the image stays in the category and the admin sees an error.
+
+---
+
+#### Checklist
+
+**Blob delete API:**
+- [x] Add authenticated admin image-delete route
+- [x] Accept only uploaded image paths that resolve to `uploads/...`
+- [x] Call Vercel Blob `del()` for private uploaded files
+- [x] Return a no-op success for non-upload/static images or keep static deletion client-only
+
+**Admin photography UI:**
+- [x] Detect uploaded image URLs before calling the delete API
+- [x] Keep existing confirmation prompt
+- [x] Remove the image from config only after any required Blob delete succeeds
+- [x] Show an error if Blob deletion fails
 
 **Verification:**
 - [x] Run production build check (`npm run build`)
